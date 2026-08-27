@@ -18,6 +18,8 @@ def create_app():
 
     db.init_app(app)
 
+    from models.payment import Payment
+
     from routes.pix import pix_bp
 
     app.register_blueprint(pix_bp)
