@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 from repository.database import db
 
+
 load_dotenv()
 
 def create_app():
