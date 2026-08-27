@@ -1,7 +1,19 @@
-from flask import Flask, jsonify
+import os
+
 from uuid import UUID
+from flask import Flask, jsonify
+from dotenv import load_dotenv
+
+from repository.database import db
+
+load_dotenv()
 
 app = Flask(__name__)
+
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
+
+db.init_app(app)
 
 @app.route("/payments/pix", methods=["POST"])
 def create_payment_pix():
