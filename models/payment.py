@@ -32,7 +32,7 @@ class Payment(Base):
         nullable=True
     )
 
-    qr_code: Mapped[str | None] = mapped_column(
+    pix_payload: Mapped[str | None] = mapped_column(
         Text,
         nullable=True
     )
