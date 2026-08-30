@@ -29,14 +29,25 @@ npm run dev                   # http://localhost:5173
 
 ### Sobre CORS
 
-O backend **não** habilita CORS — e não precisa. O `vite.config.ts` faz proxy de
+O backend ainda não habilita CORS. Enquanto isso, o `vite.config.ts` faz proxy de
 `/api/*` para `http://127.0.0.1:5000`, então o browser enxerga API e front na
-mesma origem. Nenhuma alteração no projeto Python é necessária.
+mesma origem — nenhuma alteração no projeto Python é necessária para desenvolver.
+
+O proxy é uma conveniência de desenvolvimento, não uma dependência. Quando o
+`flask-cors` estiver ligado no `create_app()`, aponte o axios direto para o
+Flask trocando uma linha do `.env`:
+
+```diff
+- VITE_API_BASE_URL=/api
++ VITE_API_BASE_URL=http://127.0.0.1:5000
+```
+
+Só o `config/env.ts` lê essa variável, então nenhum service, hook ou componente
+muda — e o bloco `server.proxy` do `vite.config.ts` pode ser apagado.
 
 > **macOS:** o AirPlay Receiver ocupa a porta 5000 em IPv6, o que faz
-> `localhost:5000` responder `403 Forbidden` mesmo com o Flask no ar. Por isso o
-> proxy aponta para `127.0.0.1` e não para `localhost`. Para trocar o alvo, use
-> `VITE_API_PROXY_TARGET` no `.env`.
+> `localhost:5000` responder `403 Forbidden` mesmo com o Flask no ar. Prefira
+> `127.0.0.1` nos dois casos — no proxy e na URL direta.
 
 ---
 
