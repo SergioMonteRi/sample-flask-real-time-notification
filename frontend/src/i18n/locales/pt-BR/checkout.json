@@ -1,0 +1,23 @@
+{
+  "eyebrow": "Abrir cobrança",
+  "title": "Quanto vamos cobrar hoje?",
+  "description": "Informe o valor e o caixa emite um Pix com QR Code válido por {{minutes}} minutos.",
+  "amountLabel": "Valor da cobrança",
+  "amountPlaceholder": "0,00",
+  "amountHint": "Digite apenas números — a vírgula entra sozinha.",
+  "submit": "Emitir cobrança Pix",
+  "submitting": "Emitindo",
+  "quickAmounts": "Valores rápidos",
+  "steps": {
+    "title": "Como funciona",
+    "one": "O caixa registra a cobrança no Flask e pede um payload ao banco simulado.",
+    "two": "O comprovante é impresso com o QR Code do Pix e um contador de expiração.",
+    "three": "Quando o banco confirma, o comprovante recebe o carimbo de pago."
+  },
+  "errors": {
+    "required": "Informe um valor para continuar.",
+    "min": "O valor precisa ser maior que zero.",
+    "max": "O valor máximo é {{max}}.",
+    "createFailed": "Não foi possível emitir a cobrança. Tente novamente."
+  }
+}

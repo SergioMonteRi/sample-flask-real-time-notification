@@ -1,0 +1,24 @@
+{
+  "brand": {
+    "name": "Caixa Pix",
+    "tagline": "Terminal de pagamentos",
+    "receiptLabel": "Via do cliente"
+  },
+  "actions": {
+    "copy": "Copiar código",
+    "copied": "Código copiado",
+    "back": "Voltar ao caixa",
+    "newPayment": "Nova cobrança",
+    "retry": "Tentar novamente",
+    "support": "Falar com o suporte"
+  },
+  "language": {
+    "label": "Idioma",
+    "ptBR": "PT",
+    "enUS": "EN"
+  },
+  "footer": {
+    "note": "Ambiente de estudo · banco simulado · nenhum valor real é movimentado"
+  },
+  "loading": "Carregando"
+}

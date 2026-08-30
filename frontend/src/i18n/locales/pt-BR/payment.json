@@ -1,0 +1,66 @@
+{
+  "eyebrow": "Comprovante de cobrança",
+  "pending": {
+    "title": "Aguardando o pagamento",
+    "description": "Abra o app do seu banco, escolha <0>Pix com QR Code</0> e aponte a câmera para o código ao lado."
+  },
+  "paid": {
+    "title": "Pagamento confirmado",
+    "description": "O banco confirmou a transferência. Este comprovante já vale como recibo.",
+    "stamp": "Pago"
+  },
+  "expired": {
+    "title": "Cobrança expirada",
+    "description": "O prazo deste QR Code terminou. Emita uma nova cobrança para continuar.",
+    "stamp": "Expirado"
+  },
+  "stamp": {
+    "pending": "Aguardando"
+  },
+  "amountLabel": "Valor",
+  "qrAlt": "QR Code do pagamento Pix",
+  "copyPaste": {
+    "label": "Pix copia e cola",
+    "hint": "Prefere colar? Use o código abaixo no app do banco."
+  },
+  "details": {
+    "title": "Dados da cobrança",
+    "paymentId": "Nº da cobrança",
+    "bankPaymentId": "Nº no banco",
+    "createdAt": "Emitido em",
+    "expiresAt": "Válido até",
+    "status": "Situação"
+  },
+  "countdown": {
+    "label": "Expira em",
+    "expired": "Prazo encerrado"
+  },
+  "status": {
+    "pending": "Aguardando banco",
+    "paid": "Confirmado",
+    "expired": "Expirado"
+  },
+  "listening": {
+    "checking": "Consultando o banco",
+    "interval": "Nova consulta a cada {{seconds}}s"
+  },
+  "simulation": {
+    "title": "Bancada de testes",
+    "description": "Dispara POST /payments/pix/confirmation, o endpoint que o banco chamará quando o pagamento cair.",
+    "action": "Simular confirmação do banco",
+    "running": "Chamando o banco"
+  },
+  "missingPayload": {
+    "title": "QR Code indisponível nesta sessão",
+    "description": "O backend ainda não devolve o payload em GET /payments/pix/<id>. Emita uma nova cobrança para ver o QR Code."
+  },
+  "errors": {
+    "loadFailed": "Não foi possível carregar esta cobrança.",
+    "copyFailed": "Não conseguimos copiar o código. Copie manualmente.",
+    "confirmFailed": "O banco simulado não respondeu. Tente novamente."
+  },
+  "success": {
+    "confirmed": "O banco confirmou o pagamento."
+  },
+  "qrCaption": "Aponte a câmera do app do banco"
+}

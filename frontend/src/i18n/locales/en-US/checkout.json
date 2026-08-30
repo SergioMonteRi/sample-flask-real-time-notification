@@ -1,0 +1,23 @@
+{
+  "eyebrow": "Open a charge",
+  "title": "How much are we charging?",
+  "description": "Enter the amount and the register issues a Pix QR Code valid for {{minutes}} minutes.",
+  "amountLabel": "Charge amount",
+  "amountPlaceholder": "0.00",
+  "amountHint": "Type digits only — the decimals fall into place.",
+  "submit": "Issue Pix charge",
+  "submitting": "Issuing",
+  "quickAmounts": "Quick amounts",
+  "steps": {
+    "title": "How it works",
+    "one": "The register stores the charge in Flask and asks the simulated bank for a payload.",
+    "two": "The receipt prints with the Pix QR Code and an expiration countdown.",
+    "three": "Once the bank confirms, the receipt gets the paid stamp."
+  },
+  "errors": {
+    "required": "Enter an amount to continue.",
+    "min": "The amount must be greater than zero.",
+    "max": "The maximum amount is {{max}}.",
+    "createFailed": "We could not issue this charge. Please try again."
+  }
+}

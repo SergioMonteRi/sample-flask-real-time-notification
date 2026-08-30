@@ -1,0 +1,14 @@
+{
+  "notFound": {
+    "stamp": "No record",
+    "title": "We could not find this charge",
+    "description": "Check that the address is correct. Expired charges also stop being displayed."
+  },
+  "boundary": {
+    "stamp": "Failure",
+    "title": "The terminal jammed",
+    "description": "Something broke while drawing this screen. Reload the receipt to try again."
+  },
+  "network": "No connection to the server. Check whether Flask is running.",
+  "unexpected": "Something went off script. Try again in a moment."
+}

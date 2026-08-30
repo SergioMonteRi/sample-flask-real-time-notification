@@ -1,0 +1,66 @@
+{
+  "eyebrow": "Charge receipt",
+  "pending": {
+    "title": "Waiting for payment",
+    "description": "Open your banking app, pick <0>Pix with QR Code</0> and point the camera at the code."
+  },
+  "paid": {
+    "title": "Payment confirmed",
+    "description": "The bank confirmed the transfer. This receipt already counts as proof.",
+    "stamp": "Paid"
+  },
+  "expired": {
+    "title": "Charge expired",
+    "description": "This QR Code is past its deadline. Issue a new charge to continue.",
+    "stamp": "Expired"
+  },
+  "stamp": {
+    "pending": "Pending"
+  },
+  "amountLabel": "Amount",
+  "qrAlt": "Pix payment QR Code",
+  "copyPaste": {
+    "label": "Pix copy and paste",
+    "hint": "Rather paste it? Use the code below in your banking app."
+  },
+  "details": {
+    "title": "Charge details",
+    "paymentId": "Charge no.",
+    "bankPaymentId": "Bank no.",
+    "createdAt": "Issued at",
+    "expiresAt": "Valid until",
+    "status": "Status"
+  },
+  "countdown": {
+    "label": "Expires in",
+    "expired": "Deadline reached"
+  },
+  "status": {
+    "pending": "Awaiting bank",
+    "paid": "Confirmed",
+    "expired": "Expired"
+  },
+  "listening": {
+    "checking": "Checking with the bank",
+    "interval": "Re-checking every {{seconds}}s"
+  },
+  "simulation": {
+    "title": "Test bench",
+    "description": "Fires POST /payments/pix/confirmation, the endpoint the bank will call once the payment lands.",
+    "action": "Simulate bank confirmation",
+    "running": "Calling the bank"
+  },
+  "missingPayload": {
+    "title": "QR Code unavailable in this session",
+    "description": "The backend does not return the payload from GET /payments/pix/<id> yet. Issue a new charge to see the QR Code."
+  },
+  "errors": {
+    "loadFailed": "We could not load this charge.",
+    "copyFailed": "We could not copy the code. Please copy it manually.",
+    "confirmFailed": "The simulated bank did not answer. Try again."
+  },
+  "success": {
+    "confirmed": "The bank confirmed the payment."
+  },
+  "qrCaption": "Point your banking app camera here"
+}

@@ -1,0 +1,24 @@
+{
+  "brand": {
+    "name": "Caixa Pix",
+    "tagline": "Payment terminal",
+    "receiptLabel": "Customer copy"
+  },
+  "actions": {
+    "copy": "Copy code",
+    "copied": "Code copied",
+    "back": "Back to the register",
+    "newPayment": "New charge",
+    "retry": "Try again",
+    "support": "Contact support"
+  },
+  "language": {
+    "label": "Language",
+    "ptBR": "PT",
+    "enUS": "EN"
+  },
+  "footer": {
+    "note": "Study environment · simulated bank · no real money moves here"
+  },
+  "loading": "Loading"
+}
