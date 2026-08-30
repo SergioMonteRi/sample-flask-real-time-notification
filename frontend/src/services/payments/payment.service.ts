@@ -1,10 +1,15 @@
 import { apiClient } from '@/services/http'
 
+import {
+  confirmPixPaymentResponseSchema,
+  createPixPaymentResponseSchema,
+  getPixPaymentResponseSchema,
+} from './payment.schemas'
 import type {
-  ConfirmPixPaymentApiResponse,
-  CreatePixPaymentApiResponse,
+  ConfirmPixPaymentResponse,
   CreatePixPaymentRequest,
-  GetPixPaymentApiResponse,
+  CreatePixPaymentResponse,
+  GetPixPaymentResponse,
 } from './payment.types'
 
 const PIX_ENDPOINT = '/payments/pix'
@@ -12,30 +17,21 @@ const PIX_ENDPOINT = '/payments/pix'
 export const paymentService = {
   createPixPayment: async (
     payload: CreatePixPaymentRequest,
-  ): Promise<CreatePixPaymentApiResponse> => {
-    const { data } = await apiClient.post<CreatePixPaymentApiResponse>(
-      PIX_ENDPOINT,
-      payload,
-    )
+  ): Promise<CreatePixPaymentResponse> => {
+    const { data } = await apiClient.post(PIX_ENDPOINT, payload)
 
-    return data
+    return createPixPaymentResponseSchema.parse(data)
   },
 
-  getPixPayment: async (
-    paymentId: string,
-  ): Promise<GetPixPaymentApiResponse> => {
-    const { data } = await apiClient.get<GetPixPaymentApiResponse>(
-      `${PIX_ENDPOINT}/${paymentId}`,
-    )
+  getPixPayment: async (paymentId: string): Promise<GetPixPaymentResponse> => {
+    const { data } = await apiClient.get(`${PIX_ENDPOINT}/${paymentId}`)
 
-    return data
+    return getPixPaymentResponseSchema.parse(data)
   },
 
-  confirmPixPayment: async (): Promise<ConfirmPixPaymentApiResponse> => {
-    const { data } = await apiClient.post<ConfirmPixPaymentApiResponse>(
-      `${PIX_ENDPOINT}/confirmation`,
-    )
+  confirmPixPayment: async (): Promise<ConfirmPixPaymentResponse> => {
+    const { data } = await apiClient.post(`${PIX_ENDPOINT}/confirmation`)
 
-    return data
+    return confirmPixPaymentResponseSchema.parse(data)
   },
 }

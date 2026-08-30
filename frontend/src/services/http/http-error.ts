@@ -1,6 +1,8 @@
 import axios from 'axios'
+import { ZodError } from 'zod'
 
-export type ApiErrorKind = 'network' | 'not-found' | 'validation' | 'unexpected'
+export type ApiErrorKind =
+  'network' | 'not-found' | 'validation' | 'contract' | 'unexpected'
 
 export interface NormalizedApiError {
   kind: ApiErrorKind
@@ -13,6 +15,11 @@ export interface NormalizedApiError {
  * Nenhum detalhe tecnico daqui deve ser exibido ao usuario final.
  */
 export const normalizeApiError = (error: unknown): NormalizedApiError => {
+  /* O schema rejeitou a resposta: o backend mudou de formato. */
+  if (error instanceof ZodError) {
+    return { kind: 'contract', status: null, message: error.message }
+  }
+
   if (axios.isAxiosError(error)) {
     const status = error.response?.status ?? null
 

@@ -28,7 +28,6 @@ import { usePixPayment } from './use-pix-payment'
 export function PixPaymentPage() {
   const { t } = useTranslation('payment')
   const { t: tCommon } = useTranslation('common')
-  const { t: tErrors } = useTranslation('errors')
 
   const {
     payment,
@@ -37,7 +36,7 @@ export function PixPaymentPage() {
     isLoading,
     isChecking,
     isNotFound,
-    hasLoadError,
+    loadErrorMessage,
     isConfirming,
     handleSimulateConfirmation,
     handleCopyError,
@@ -79,11 +78,11 @@ export function PixPaymentPage() {
             />
           )}
 
-          {hasLoadError && (
+          {loadErrorMessage && (
             <PaymentNotice
               tone="danger"
               title={t('errors.loadFailed')}
-              description={tErrors('network')}
+              description={loadErrorMessage}
             />
           )}
 

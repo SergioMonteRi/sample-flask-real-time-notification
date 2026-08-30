@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { ROUTES } from '@/constants'
 import type { CountdownState } from '@/hooks'
 import { useCountdown } from '@/hooks'
-import { isNotFoundError } from '@/services/http'
+import { isNotFoundError, normalizeApiError } from '@/services/http'
 import type { PixPayment, PixPaymentStatus } from '@/services/payments'
 import {
   useConfirmPixPaymentMutation,
@@ -13,14 +13,13 @@ import {
 } from '@/services/payments'
 
 interface UsePixPaymentReturn {
-  paymentId: string
   payment: PixPayment | null
   status: PixPaymentStatus
   countdown: CountdownState
   isLoading: boolean
   isChecking: boolean
   isNotFound: boolean
-  hasLoadError: boolean
+  loadErrorMessage: string | null
   isConfirming: boolean
   handleSimulateConfirmation: () => void
   handleCopyError: () => void
@@ -40,6 +39,7 @@ const resolveStatus = (
 export const usePixPayment = (): UsePixPaymentReturn => {
   const { paymentId = '' } = useParams<{ paymentId: string }>()
   const { t } = useTranslation('payment')
+  const { t: tErrors } = useTranslation('errors')
   const navigate = useNavigate()
 
   const { data, error, isError, isLoading, isFetching } = usePixPaymentQuery({
@@ -53,12 +53,8 @@ export const usePixPayment = (): UsePixPaymentReturn => {
   const { mutate: confirmPayment, isPending: isConfirming } =
     useConfirmPixPaymentMutation(paymentId)
 
-  const handleSimulateConfirmation = () => {
-    confirmPayment(undefined, {
-      onSuccess: () => toast.success(t('success.confirmed')),
-      onError: () => toast.error(t('errors.confirmFailed')),
-    })
-  }
+  /* Sucesso e erro desta mutation saem do `meta`, no QueryClient. */
+  const handleSimulateConfirmation = () => confirmPayment()
 
   const handleCopyError = () => toast.error(t('errors.copyFailed'))
 
@@ -66,15 +62,20 @@ export const usePixPayment = (): UsePixPaymentReturn => {
     void navigate(ROUTES.checkout)
   }
 
+  const errorKind = isError ? normalizeApiError(error).kind : null
+
   return {
-    paymentId,
     payment,
     status,
     countdown,
     isLoading,
     isChecking: isFetching,
     isNotFound: isError && isNotFoundError(error),
-    hasLoadError: isError && !isNotFoundError(error),
+    /* O erro de carga aparece inline no cartao, e nao como toast. */
+    loadErrorMessage:
+      errorKind && errorKind !== 'not-found'
+        ? tErrors(errorKind === 'contract' ? 'contract' : 'network')
+        : null,
     isConfirming,
     handleSimulateConfirmation,
     handleCopyError,

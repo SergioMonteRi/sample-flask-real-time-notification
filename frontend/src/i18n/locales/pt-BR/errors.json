@@ -10,5 +10,6 @@
     "badge": "Falha"
   },
   "network": "Sem conexão com o servidor. Verifique se o Flask está rodando.",
-  "unexpected": "Algo saiu do previsto. Tente novamente em instantes."
+  "unexpected": "Algo saiu do previsto. Tente novamente em instantes.",
+  "contract": "O servidor respondeu em um formato que o app não reconhece. Confira a rota no backend."
 }

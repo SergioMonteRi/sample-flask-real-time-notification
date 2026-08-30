@@ -86,8 +86,8 @@ muda — e o bloco `server.proxy` do `vite.config.ts` pode ser apagado.
 ### Detalhes que valem lembrar
 
 - **`value` chega como string.** O Pydantic serializa `Decimal` como `"287.90"`
-  em `model_dump(mode="json")`. O contrato bruto aceita `string | number` e
-  `payment.mapper.ts` normaliza para `number` antes de a UI ver o dado.
+  em `model_dump(mode="json")`. O `z.coerce.number()` em `payment.schemas.ts`
+  resolve isso na fronteira — e avisa se o formato mudar.
 - **404 vem do conversor de rota.** Um `payment_id` que não seja um UUID válido
   nunca chega à view: o Flask responde 404 e o front mostra a tela de
   cobrança não encontrada.
@@ -122,7 +122,7 @@ def payment_pix_page(payment_id: UUID):
     }), 200
 ```
 
-O front já lê `payment` quando ele aparece (`use-pix-payment-query.ts`) e passa a
+O front já lê `payment` quando ele aparece (`payment.queries.ts`) e passa a
 ignorar o snapshot sozinho. Aí é só apagar `payment-snapshot.utils.ts`, a chave
 em `storage.constants.ts` e o campo `isFromLocalSnapshot`.
 
@@ -139,7 +139,7 @@ O `Flask-SocketIO` já está no `requirements.txt` mas não está ligado no
 1. `npm install socket.io-client`
 2. Criar `src/services/payments/use-pix-payment-socket.ts`, que escuta o evento
    e chama `queryClient.setQueryData(paymentQueryKeys.pixDetail(id), ...)`
-3. Trocar o `refetchInterval` de `use-pix-payment-query.ts` por `false`
+3. Trocar o `refetchInterval` de `payment.queries.ts` por `false`
 
 Nenhum componente muda: a UI já reage a qualquer atualização do cache.
 
@@ -166,8 +166,8 @@ src/
   providers/         # app-providers (theme, query, router, i18n) e toast
   routes/            # mapa de rotas
   services/
-    http/            # api-client (axios) + normalização de erro
-    payments/        # service, mapper, query-keys, queries e mutations
+    http/            # api-client (axios), normalização de erro, meta tipado
+    payments/        # schemas Zod, service, queries, mutations e hooks
   styles/            # theme, global-styles, animations, mixins
   utils/             # date, number, mask, storage, clipboard
 ```
@@ -179,7 +179,13 @@ src/
 - **Nada de Axios no componente.** A UI fala com hooks; hooks falam com o
   service; o service só faz HTTP e não importa React nem TanStack Query.
 - **Nenhum `useEffect` para buscar dados.** Todo estado de servidor é
-  TanStack Query.
+  TanStack Query, declarado com `queryOptions` / `mutationOptions` — a
+  `queryKey` carrega o tipo do dado, então `setQueryData` infere sozinho.
+- **Contrato validado na fronteira** com Zod: os tipos saem do schema por
+  inferência e o `transform` faz o snake_case virar camelCase. Um `ZodError`
+  é classificado como `contract`, distinto de falha de rede.
+- **Feedback de erro centralizado** no `MutationCache`: cada mutation declara
+  `meta.errorMessageKey` e o toast acontece num lugar só.
 - **Formulário** com React Hook Form + Zod. O schema
   (`checkout.schema.ts`) guarda *chaves de tradução* como mensagem, então a
   validação é a única fonte de verdade e continua traduzida nos dois idiomas.

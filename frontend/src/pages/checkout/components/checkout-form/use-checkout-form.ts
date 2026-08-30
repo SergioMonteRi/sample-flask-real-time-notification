@@ -3,7 +3,6 @@ import type { ChangeEvent } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'sonner'
 
 import { buildPixPaymentRoute } from '@/constants'
 import { useCreatePixPaymentMutation } from '@/services/payments'
@@ -42,13 +41,13 @@ export const useCheckoutForm = () => {
   }
 
   const handleCreatePayment = ({ amount }: CheckoutFormData) => {
+    /* O toast de erro vem do `meta` da mutation, no QueryClient. */
     createPixPayment(
       { value: parseCurrencyToNumber(amount) },
       {
         onSuccess: (payment) => {
           void navigate(buildPixPaymentRoute(payment.id))
         },
-        onError: () => toast.error(t('errors.createFailed')),
       },
     )
   }

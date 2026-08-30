@@ -557,15 +557,23 @@ src/
   services/
     http/
       api-client.ts
+      http-error.ts          # normaliza qualquer erro em um formato estável
+      query-meta.d.ts        # tipagem do `meta` de queries e mutations
 
     products/
-      product.service.ts
-      product.types.ts
-      product.query-keys.ts
-      use-products-query.ts
+      product.schemas.ts       # schemas Zod + transform para o domínio
+      product.types.ts         # tipos derivados dos schemas (z.infer)
+      product.service.ts       # apenas Axios + parse do schema
+      product.queries.ts       # queryOptions() e a fábrica de queryKeys
+      product.mutations.ts     # mutationOptions()
+      use-products-query.ts    # hook fino sobre product.queries
       use-create-product-mutation.ts
       use-delete-product-mutation.ts
 ```
+
+Quatro arquivos de definição e um hook por operação. Os hooks continuam sendo
+a fronteira que a UI enxerga — quem consome nunca importa `queryOptions`
+diretamente.
 
 ------------------------------------------------------------------------
 
@@ -573,27 +581,131 @@ src/
 
 `product.service.ts` deve:
 
-- Conter apenas chamadas Axios
+- Conter apenas chamadas Axios e o `parse` do schema da resposta
 - Não importar React
 - Não importar TanStack Query
 - Não conter regra de negócio
 - Ser responsável apenas por comunicação com API
 
+### Validação de contrato com Zod
+
+A resposta da API deve ser validada na fronteira, e não confiada às cegas.
+O schema é a **única** descrição do contrato: os tipos saem dele por
+inferência, e o `transform` converte snake_case em camelCase — dispensando um
+arquivo de mapper separado.
+
+```ts
+// product.schemas.ts
+const productApiSchema = z.object({
+  id: z.string(),
+  unit_price: z.coerce.number(), // aceita "12.90" vindo de um Decimal
+  is_active: z.boolean(),
+})
+
+export const productSchema = productApiSchema.transform((product) => ({
+  id: product.id,
+  unitPrice: product.unit_price,
+  isActive: product.is_active,
+}))
+
+// product.types.ts
+export type Product = z.infer<typeof productSchema>
+```
+
+Quando o back-end muda de formato, o erro aparece na fronteira com a mensagem
+do Zod — e não como `NaN` ou `undefined` três camadas acima. O normalizador de
+erros deve tratar `ZodError` como uma categoria própria (`contract`), distinta
+de falha de rede.
+
 ------------------------------------------------------------------------
 
 ## 5.5 Queries e Mutations
 
+### Definições com `queryOptions` / `mutationOptions`
+
+Toda query e mutation deve ser declarada com os helpers `queryOptions()` e
+`mutationOptions()` do TanStack Query, e não montada inline dentro do hook.
+Eles amarram `queryKey` e `queryFn` no mesmo objeto, então a chave passa a
+**carregar o tipo do dado**: `setQueryData` infere sozinho, sem repetir
+genéricos à mão, e as duas pontas não têm como divergir.
+
+```ts
+// product.queries.ts
+export const productKeys = {
+  all: ['products'] as const,
+  detail: (productId: string) => [...productKeys.all, productId] as const,
+}
+
+export const productQueries = {
+  detail: (productId: string) =>
+    queryOptions({
+      queryKey: productKeys.detail(productId),
+      queryFn: () => productService.getProduct(productId),
+    }),
+}
+
+// use-product-query.ts — o hook fica fino
+export const useProductQuery = (productId: string) =>
+  useQuery(productQueries.detail(productId))
+
+// em qualquer lugar: tipado, sem genérico manual
+queryClient.setQueryData(productQueries.detail(id).queryKey, next)
+```
+
+Mutations que precisam mexer no cache recebem o `QueryClient` como parâmetro
+da fábrica, mantendo o hook com uma linha só.
+
 ### Queries
 
-- Devem utilizar `useQuery`
-- Devem possuir `queryKey` padronizada
+- Devem utilizar `useQuery` sobre um `queryOptions`
+- Devem possuir `queryKey` vinda de uma fábrica de chaves centralizada
 - Devem ter chave isolada quando necessário
 
 ### Mutations
 
-- Devem utilizar `useMutation`
+- Devem utilizar `useMutation` sobre um `mutationOptions`
 - Devem aplicar optimistic update quando apropriado
 - Devem invalidar queries relacionadas após sucesso
+
+### Feedback de erro via `meta`
+
+Não se deve criar um wrapper genérico sobre `useMutation` que receba
+`onSuccess` e `onError` por parâmetro. Além de duplicar a API da biblioteca,
+esse wrapper perde `onMutate`, `onSettled`, `retry`, `mutationKey` e o tipo do
+contexto de rollback — e cresce em número de props a cada nova necessidade,
+exatamente o que a seção 2.8 condena.
+
+O feedback deve ser centralizado no `QueryCache` / `MutationCache` do
+`QueryClient`. Cada query ou mutation apenas **declara** a chave de tradução
+em `meta`, e o toast acontece em um lugar só:
+
+```ts
+// query-client.ts
+new QueryClient({
+  mutationCache: new MutationCache({
+    onError: (_error, _vars, _onMutateResult, mutation) =>
+      notifyError(mutation.meta?.errorMessageKey),
+  }),
+})
+
+// na definição da mutation
+meta: { errorMessageKey: 'products:errors.createFailed' }
+```
+
+O `meta` deve ser tipado por module augmentation, para que a chave não vire
+uma string solta:
+
+```ts
+declare module '@tanstack/react-query' {
+  interface Register {
+    queryMeta: { errorMessageKey?: string }
+    mutationMeta: { errorMessageKey?: string; successMessageKey?: string }
+  }
+}
+```
+
+Telas que mostram o erro **inline** (dentro do próprio card, por exemplo)
+simplesmente não declaram `meta`, evitando toast duplicado.
 
 ------------------------------------------------------------------------
 

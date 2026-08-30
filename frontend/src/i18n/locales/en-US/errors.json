@@ -10,5 +10,6 @@
     "badge": "Failure"
   },
   "network": "No connection to the server. Check whether Flask is running.",
-  "unexpected": "Something went off script. Try again in a moment."
+  "unexpected": "Something went off script. Try again in a moment.",
+  "contract": "The server answered in a shape the app does not recognise. Check the backend route."
 }
