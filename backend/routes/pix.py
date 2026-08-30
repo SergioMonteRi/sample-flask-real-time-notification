@@ -12,7 +12,7 @@ from schemas.create_payment import CreatePaymentRequest, CreatePaymentResponse
 pix_bp = Blueprint("pix", __name__)
 
 @pix_bp.route("/payments/pix", methods=["POST"])
-def create_payment_pix():
+def create_pix_payment():
     data = request.json
 
     try:
