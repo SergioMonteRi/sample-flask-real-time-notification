@@ -10,12 +10,11 @@ import {
   BrandMark,
   BrandName,
   BrandTagline,
-  FooterTicker,
+  FooterNote,
   ShellFooter,
   ShellHeader,
   ShellMain,
   ShellWrapper,
-  TickerRun,
 } from './styles'
 
 type AppShellProps = {
@@ -24,8 +23,6 @@ type AppShellProps = {
 
 export function AppShell({ children }: AppShellProps) {
   const { t } = useTranslation('common')
-
-  const tickerText = `${t('footer.note')} ·`
 
   return (
     <ShellWrapper>
@@ -50,14 +47,7 @@ export function AppShell({ children }: AppShellProps) {
       <ShellMain>{children}</ShellMain>
 
       <ShellFooter>
-        <FooterTicker aria-hidden="true">
-          <TickerRun>
-            {tickerText} {tickerText} {tickerText} {tickerText}
-          </TickerRun>
-          <TickerRun>
-            {tickerText} {tickerText} {tickerText} {tickerText}
-          </TickerRun>
-        </FooterTicker>
+        <FooterNote>{t('footer.note')}</FooterNote>
       </ShellFooter>
     </ShellWrapper>
   )

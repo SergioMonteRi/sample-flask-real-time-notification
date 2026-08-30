@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
-import { Receipt } from '@/components/organisms'
+import { BaseText } from '@/components/atoms'
+import { Card } from '@/components/organisms'
 
 import { CheckoutForm, CheckoutSteps } from './components'
 import {
@@ -15,7 +16,6 @@ import { useCheckout } from './use-checkout'
 
 export function CheckoutPage() {
   const { t } = useTranslation('checkout')
-  const { t: tCommon } = useTranslation('common')
   const { expirationMinutes } = useCheckout()
 
   return (
@@ -31,18 +31,17 @@ export function CheckoutPage() {
       </IntroColumn>
 
       <FormColumn>
-        <Receipt.Root>
-          <Receipt.Header
-            eyebrow={tCommon('brand.name')}
-            serial={t('eyebrow')}
-          />
+        <Card.Root>
+          <Card.Header>
+            <BaseText as="h2" variant="title">
+              {t('amountLabel')}
+            </BaseText>
+          </Card.Header>
 
-          <Receipt.Section>
+          <Card.Section>
             <CheckoutForm />
-          </Receipt.Section>
-
-          <Receipt.Footer caption={tCommon('brand.receiptLabel')} />
-        </Receipt.Root>
+          </Card.Section>
+        </Card.Root>
       </FormColumn>
     </CheckoutLayout>
   )

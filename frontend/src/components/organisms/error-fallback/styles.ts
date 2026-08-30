@@ -13,8 +13,3 @@ export const FallbackActions = styled.div`
   flex-wrap: wrap;
   gap: ${({ theme }) => theme.spacing.sm};
 `
-
-export const StampRow = styled.div`
-  display: flex;
-  padding-block: ${({ theme }) => theme.spacing.xs};
-`

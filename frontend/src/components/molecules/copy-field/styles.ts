@@ -17,35 +17,27 @@ export const CopyHeader = styled.div`
 
 export const CopyLabel = styled.span`
   ${microLabel};
-  color: ${({ theme }) => theme.colors.graphiteSoft};
+  color: ${({ theme }) => theme.colors.textMuted};
 `
 
 export const PayloadBox = styled.p`
   margin: 0;
   padding: ${({ theme }) => theme.spacing.sm};
-  max-height: 5.25rem;
+  max-height: 4.75rem;
   overflow-y: auto;
   overflow-wrap: anywhere;
-  border: 1px dashed ${({ theme }) => theme.colors.paperEdge};
-  border-radius: ${({ theme }) => theme.radii.sm};
-  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: ${({ theme }) => theme.radii.md};
+  background-color: ${({ theme }) => theme.colors.surfaceMuted};
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: ${({ theme }) => theme.fontSizes.micro};
-  line-height: 1.9;
-  letter-spacing: 0.06em;
-  color: ${({ theme }) => theme.colors.graphiteSoft};
-
-  /* Blocos de 4 caracteres, como um codigo de barras transcrito. */
-  span + span {
-    margin-left: 0.5em;
-  }
+  line-height: 1.85;
+  color: ${({ theme }) => theme.colors.textMuted};
 
   scrollbar-width: thin;
-  scrollbar-color: ${({ theme }) => theme.colors.paperEdge} transparent;
+  scrollbar-color: ${({ theme }) => theme.colors.borderStrong} transparent;
 `
 
 export const CopyHint = styled.span`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: ${({ theme }) => theme.fontSizes.micro};
-  color: ${({ theme }) => theme.colors.graphiteFaint};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  color: ${({ theme }) => theme.colors.textFaint};
 `

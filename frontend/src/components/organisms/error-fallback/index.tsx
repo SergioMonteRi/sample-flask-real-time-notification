@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next'
 
-import { BaseButton, BaseStamp, BaseText } from '@/components/atoms'
+import { BaseBadge, BaseButton, BaseText } from '@/components/atoms'
 
-import { Receipt } from '../receipt'
-import { FallbackActions, FallbackWrapper, StampRow } from './styles'
+import { Card } from '../card'
+import { FallbackActions, FallbackWrapper } from './styles'
 
 type ErrorFallbackProps = {
   resetErrorBoundary: () => void
@@ -15,28 +15,27 @@ export function ErrorFallback({ resetErrorBoundary }: ErrorFallbackProps) {
 
   return (
     <FallbackWrapper role="alert">
-      <Receipt.Root>
-        <Receipt.Header eyebrow={tCommon('brand.name')} serial="ERR" />
+      <Card.Root>
+        <Card.Header>
+          <BaseText variant="micro" tone="faint">
+            {tCommon('brand.name')}
+          </BaseText>
+          <BaseBadge label={t('boundary.badge')} tone="danger" />
+        </Card.Header>
 
-        <StampRow>
-          <BaseStamp label={t('boundary.stamp')} tone="accent" isAnimated />
-        </StampRow>
-
-        <Receipt.Section>
+        <Card.Section>
           <BaseText as="h1" variant="title">
             {t('boundary.title')}
           </BaseText>
-          <BaseText tone="inkSoft">{t('boundary.description')}</BaseText>
-        </Receipt.Section>
+          <BaseText tone="muted">{t('boundary.description')}</BaseText>
+        </Card.Section>
 
         <FallbackActions>
           <BaseButton onClick={resetErrorBoundary}>
             {tCommon('actions.retry')}
           </BaseButton>
         </FallbackActions>
-
-        <Receipt.Footer caption={tCommon('brand.receiptLabel')} />
-      </Receipt.Root>
+      </Card.Root>
     </FallbackWrapper>
   )
 }

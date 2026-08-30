@@ -27,7 +27,7 @@ export function CheckoutForm() {
     <FormElement onSubmit={handleSubmitForm} noValidate>
       <BaseTextInput
         {...amountField}
-        label={t('amountLabel')}
+        aria-label={t('amountLabel')}
         placeholder={t('amountPlaceholder')}
         hint={t('amountHint')}
         errorMessage={errorMessage}
@@ -44,7 +44,7 @@ export function CheckoutForm() {
           {quickAmounts.map((amount) => (
             <BaseButton
               key={amount}
-              variant="paper"
+              variant="secondary"
               size="sm"
               onClick={() => handleQuickAmount(amount)}
             >

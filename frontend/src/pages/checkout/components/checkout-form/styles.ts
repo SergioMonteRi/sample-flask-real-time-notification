@@ -5,7 +5,7 @@ import { microLabel } from '@/styles'
 export const FormElement = styled.form`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.lg};
 `
 
 export const QuickAmountsWrapper = styled.div`
@@ -16,7 +16,7 @@ export const QuickAmountsWrapper = styled.div`
 
 export const QuickAmountsLabel = styled.span`
   ${microLabel};
-  color: ${({ theme }) => theme.colors.graphiteFaint};
+  color: ${({ theme }) => theme.colors.textFaint};
 `
 
 export const QuickAmountsRow = styled.div`

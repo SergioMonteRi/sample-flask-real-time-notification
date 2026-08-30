@@ -7,7 +7,10 @@ export const CheckoutLayout = styled.div`
   flex: 1;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xxl};
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  grid-template-columns: minmax(0, 1fr) minmax(
+      0,
+      ${({ theme }) => theme.layout.cardWidth}
+    );
   padding-block: ${({ theme }) => theme.spacing.xl};
 
   @media (max-width: 60rem) {
@@ -20,57 +23,35 @@ export const CheckoutLayout = styled.div`
 export const IntroColumn = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.xl};
-  /* Quebra do grid: a coluna editorial desce um pouco para criar tensao. */
-  padding-top: ${({ theme }) => theme.spacing.xl};
-
-  @media (max-width: 60rem) {
-    padding-top: 0;
-  }
+  gap: ${({ theme }) => theme.spacing.lg};
+  max-width: 32rem;
 `
 
 export const IntroEyebrow = styled.span`
   ${microLabel};
-  display: inline-flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.xs};
-  letter-spacing: 0.34em;
-  color: ${({ theme }) => theme.colors.vermilion};
-  animation: ${fadeIn} 520ms ease both;
-
-  &::before {
-    content: '';
-    width: 2rem;
-    height: 1px;
-    background-color: currentColor;
-  }
+  color: ${({ theme }) => theme.colors.accent};
+  animation: ${fadeIn} 500ms ease both;
 `
 
 export const IntroHeading = styled.h1`
   font-family: ${({ theme }) => theme.fonts.display};
   font-size: ${({ theme }) => theme.fontSizes.display};
-  line-height: 0.98;
-  letter-spacing: -0.018em;
-  color: ${({ theme }) => theme.colors.onInk};
-  max-width: 14ch;
-  animation: ${riseIn} 620ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  animation-delay: 80ms;
-
-  em {
-    font-style: italic;
-    color: ${({ theme }) => theme.colors.vermilion};
-  }
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: ${({ theme }) => theme.colors.text};
+  max-width: 15ch;
+  animation: ${riseIn} 560ms cubic-bezier(0.22, 1, 0.36, 1) 60ms both;
 `
 
 export const IntroDescription = styled.p`
-  max-width: 40ch;
+  max-width: 42ch;
+  text-wrap: balance;
   margin: 0;
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  line-height: 1.8;
-  color: ${({ theme }) => theme.colors.onInkSoft};
-  animation: ${riseIn} 620ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  animation-delay: 180ms;
+  font-size: ${({ theme }) => theme.fontSizes.md};
+  line-height: 1.7;
+  color: ${({ theme }) => theme.colors.textMuted};
+  animation: ${riseIn} 560ms cubic-bezier(0.22, 1, 0.36, 1) 140ms both;
 `
 
 export const FormColumn = styled.div`

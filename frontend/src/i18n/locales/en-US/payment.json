@@ -1,21 +1,16 @@
 {
-  "eyebrow": "Charge receipt",
+  "eyebrow": "Pix charge",
   "pending": {
     "title": "Waiting for payment",
     "description": "Open your banking app, pick <0>Pix with QR Code</0> and point the camera at the code."
   },
   "paid": {
     "title": "Payment confirmed",
-    "description": "The bank confirmed the transfer. This receipt already counts as proof.",
-    "stamp": "Paid"
+    "description": "The bank confirmed the transfer. This charge is settled."
   },
   "expired": {
     "title": "Charge expired",
-    "description": "This QR Code is past its deadline. Issue a new charge to continue.",
-    "stamp": "Expired"
-  },
-  "stamp": {
-    "pending": "Pending"
+    "description": "This QR Code is past its deadline. Issue a new charge to continue."
   },
   "amountLabel": "Amount",
   "qrAlt": "Pix payment QR Code",

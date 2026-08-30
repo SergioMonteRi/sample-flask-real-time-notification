@@ -14,7 +14,7 @@ export function PaymentNotice({
 }: PaymentNoticeProps) {
   return (
     <NoticeBox $tone={tone} role="status">
-      <NoticeTitle>{title}</NoticeTitle>
+      <NoticeTitle $tone={tone}>{title}</NoticeTitle>
       <NoticeText>{description}</NoticeText>
     </NoticeBox>
   )

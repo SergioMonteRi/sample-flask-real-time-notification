@@ -1,8 +1,7 @@
 {
   "brand": {
     "name": "Caixa Pix",
-    "tagline": "Terminal de pagamentos",
-    "receiptLabel": "Via do cliente"
+    "tagline": "Cobranças Pix"
   },
   "actions": {
     "copy": "Copiar código",
@@ -18,7 +17,7 @@
     "enUS": "EN"
   },
   "footer": {
-    "note": "Ambiente de estudo · banco simulado · nenhum valor real é movimentado"
+    "note": "Ambiente de estudo · banco simulado · nenhum valor real é movimentado."
   },
   "loading": "Carregando"
 }

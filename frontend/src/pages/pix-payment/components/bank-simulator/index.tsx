@@ -23,7 +23,7 @@ export function BankSimulator({
       <SimulatorText>{t('simulation.description')}</SimulatorText>
 
       <BaseButton
-        variant="ghost"
+        variant="secondary"
         size="sm"
         isFullWidth
         isLoading={isConfirming}

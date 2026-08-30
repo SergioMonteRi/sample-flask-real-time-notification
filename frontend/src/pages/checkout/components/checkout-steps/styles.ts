@@ -6,13 +6,11 @@ export const StepsWrapper = styled.section`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.md};
-  max-width: 34rem;
 `
 
 export const StepsTitle = styled.h2`
   ${microLabel};
-  letter-spacing: 0.3em;
-  color: ${({ theme }) => theme.colors.onInkSoft};
+  color: ${({ theme }) => theme.colors.textFaint};
 `
 
 export const StepsList = styled.ol`
@@ -27,37 +25,41 @@ export const StepsList = styled.ol`
 
 export const StepItem = styled.li`
   display: grid;
-  grid-template-columns: 2.5rem 1fr;
+  grid-template-columns: 1.5rem 1fr;
   gap: ${({ theme }) => theme.spacing.sm};
-  align-items: baseline;
-  padding-top: ${({ theme }) => theme.spacing.sm};
-  border-top: 1px solid ${({ theme }) => theme.colors.inkLine};
+  align-items: start;
   counter-increment: step;
-  animation: ${riseIn} 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: ${riseIn} 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
 
   &:nth-child(1) {
-    animation-delay: 320ms;
+    animation-delay: 220ms;
   }
   &:nth-child(2) {
-    animation-delay: 400ms;
+    animation-delay: 290ms;
   }
   &:nth-child(3) {
-    animation-delay: 480ms;
+    animation-delay: 360ms;
   }
 
   &::before {
-    content: '0' counter(step);
-    font-family: ${({ theme }) => theme.fonts.display};
-    font-size: ${({ theme }) => theme.fontSizes.xl};
-    line-height: 1;
-    color: ${({ theme }) => theme.colors.vermilion};
+    content: counter(step);
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background-color: ${({ theme }) => theme.colors.accentSoft};
+    color: ${({ theme }) => theme.colors.accentStrong};
+    font-size: ${({ theme }) => theme.fontSizes.micro};
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
   }
 `
 
 export const StepText = styled.p`
   margin: 0;
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: ${({ theme }) => theme.fontSizes.xs};
-  line-height: 1.8;
-  color: ${({ theme }) => theme.colors.onInkSoft};
+  padding-top: 0.1rem;
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  line-height: 1.7;
+  color: ${({ theme }) => theme.colors.textMuted};
 `

@@ -9,7 +9,6 @@ import {
   QrCanvas,
   QrCaption,
   QrFrame,
-  ScanLine,
   SealCheck,
   SealMark,
 } from './styles'
@@ -24,33 +23,31 @@ export function PixQrCode({ payload, status, caption }: PixQrCodeProps) {
   const { t } = useTranslation('payment')
 
   const isPaid = status === 'paid'
+  const isPending = status === 'pending'
 
   return (
-    <QrFrame $isPaid={isPaid}>
+    <QrFrame>
       <QrCanvas $isDimmed={status !== 'pending'}>
         <QRCodeSVG
           value={payload}
-          size={196}
+          size={188}
           level="M"
           marginSize={0}
           bgColor="transparent"
-          fgColor={theme.colors.graphite}
+          fgColor={theme.colors.text}
           title={t('qrAlt')}
         />
-
-        {status === 'pending' && <ScanLine aria-hidden="true" />}
       </QrCanvas>
 
       {isPaid && (
         <PaidSeal>
           <SealMark>
             <SealCheck aria-hidden="true">✓</SealCheck>
-            {t('paid.stamp')}
           </SealMark>
         </PaidSeal>
       )}
 
-      <QrCaption>{caption}</QrCaption>
+      {isPending && <QrCaption>{caption}</QrCaption>}
     </QrFrame>
   )
 }

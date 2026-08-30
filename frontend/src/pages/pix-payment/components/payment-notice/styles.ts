@@ -1,36 +1,34 @@
 import styled, { css } from 'styled-components'
 
-import { microLabel } from '@/styles'
-
 export type NoticeTone = 'info' | 'danger'
 
 export const NoticeBox = styled.aside<{ $tone: NoticeTone }>`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.xxs};
-  padding: ${({ theme }) => theme.spacing.sm};
-  border-radius: ${({ theme }) => theme.radii.sm};
-  background-color: rgba(255, 255, 255, 0.42);
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.radii.md};
 
   ${({ $tone, theme }) =>
     $tone === 'danger'
       ? css`
-          border-left: 3px solid ${theme.colors.vermilion};
+          background-color: ${theme.colors.dangerSoft};
         `
       : css`
-          border-left: 3px solid ${theme.colors.amber};
+          background-color: ${theme.colors.pendingSoft};
         `}
 `
 
-export const NoticeTitle = styled.strong`
-  ${microLabel};
-  color: ${({ theme }) => theme.colors.graphite};
+export const NoticeTitle = styled.strong<{ $tone: NoticeTone }>`
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  font-weight: 600;
+  color: ${({ theme, $tone }) =>
+    $tone === 'danger' ? theme.colors.danger : theme.colors.pending};
 `
 
 export const NoticeText = styled.p`
   margin: 0;
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: ${({ theme }) => theme.fontSizes.micro};
-  line-height: 1.8;
-  color: ${({ theme }) => theme.colors.graphiteSoft};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  line-height: 1.7;
+  color: ${({ theme }) => theme.colors.textMuted};
 `

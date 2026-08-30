@@ -5,17 +5,19 @@ import { focusRing, microLabel } from '@/styles'
 export const SwitchWrapper = styled.div`
   display: inline-flex;
   align-items: center;
-  border: 1px solid ${({ theme }) => theme.colors.inkLine};
-  border-radius: ${({ theme }) => theme.radii.sm};
-  overflow: hidden;
+  padding: 2px;
+  gap: 2px;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background-color: ${({ theme }) => theme.colors.surfaceMuted};
 `
 
 export const SwitchOption = styled.button<{ $isActive: boolean }>`
   ${microLabel};
   ${focusRing};
 
-  padding: ${({ theme }) => `${theme.spacing.xxs} ${theme.spacing.xs}`};
-  letter-spacing: 0.16em;
+  padding: ${({ theme }) => `0.3rem ${theme.spacing.sm}`};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  letter-spacing: 0.08em;
   transition:
     background-color ${({ theme }) => theme.transitions.fast},
     color ${({ theme }) => theme.transitions.fast};
@@ -23,18 +25,15 @@ export const SwitchOption = styled.button<{ $isActive: boolean }>`
   ${({ $isActive, theme }) =>
     $isActive
       ? css`
-          background-color: ${theme.colors.vermilion};
-          color: ${theme.colors.paper};
+          background-color: ${theme.colors.surface};
+          color: ${theme.colors.text};
+          box-shadow: ${theme.shadows.subtle};
         `
       : css`
-          color: ${theme.colors.onInkSoft};
+          color: ${theme.colors.textFaint};
 
           &:hover {
-            color: ${theme.colors.onInk};
+            color: ${theme.colors.textMuted};
           }
         `}
-
-  & + & {
-    border-left: 1px solid ${({ theme }) => theme.colors.inkLine};
-  }
 `

@@ -8,7 +8,7 @@ export const PaymentLayout = styled.div`
   align-items: start;
   gap: ${({ theme }) => theme.spacing.xxl};
   grid-template-columns:
-    minmax(0, ${({ theme }) => theme.layout.receiptWidth})
+    minmax(0, ${({ theme }) => theme.layout.cardWidth})
     minmax(0, 1fr);
   padding-block: ${({ theme }) => theme.spacing.xl};
 
@@ -18,7 +18,7 @@ export const PaymentLayout = styled.div`
   }
 `
 
-export const ReceiptColumn = styled.div`
+export const CardColumn = styled.div`
   display: flex;
   justify-content: flex-start;
 `
@@ -27,36 +27,29 @@ export const AsideColumn = styled.aside`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.lg};
-  padding-top: ${({ theme }) => theme.spacing.xl};
-  animation: ${fadeIn} 700ms ease 300ms both;
-
-  @media (max-width: 58rem) {
-    padding-top: 0;
-  }
+  max-width: 28rem;
+  animation: ${fadeIn} 600ms ease 180ms both;
 `
 
 export const AsideHeading = styled.h1`
   font-family: ${({ theme }) => theme.fonts.display};
-  font-size: ${({ theme }) => theme.fontSizes.xl};
+  font-size: ${({ theme }) => theme.fontSizes.display};
+  font-weight: 300;
   line-height: 1.1;
-  color: ${({ theme }) => theme.colors.onInk};
-  animation: ${riseIn} 620ms cubic-bezier(0.2, 0.8, 0.2, 1) 320ms both;
+  letter-spacing: -0.02em;
+  color: ${({ theme }) => theme.colors.text};
+  animation: ${riseIn} 560ms cubic-bezier(0.22, 1, 0.36, 1) 220ms both;
 `
 
 export const AsideDescription = styled.p`
-  max-width: 38ch;
   margin: 0;
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: ${({ theme }) => theme.fontSizes.xs};
-  line-height: 1.85;
-  color: ${({ theme }) => theme.colors.onInkSoft};
+  font-size: ${({ theme }) => theme.fontSizes.md};
+  line-height: 1.7;
+  color: ${({ theme }) => theme.colors.textMuted};
 
   strong {
     font-weight: 600;
-    color: ${({ theme }) => theme.colors.onInk};
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-color: ${({ theme }) => theme.colors.vermilion};
+    color: ${({ theme }) => theme.colors.text};
   }
 `
 
@@ -65,7 +58,6 @@ export const StatusRow = styled.div`
   align-items: flex-end;
   justify-content: space-between;
   gap: ${({ theme }) => theme.spacing.sm};
-  padding-bottom: ${({ theme }) => theme.spacing.xs};
 `
 
 export const AsideActions = styled.div`
@@ -83,6 +75,5 @@ export const LoadingPanel = styled.div`
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.sm};
   padding-block: ${({ theme }) => theme.spacing.xxl};
-  letter-spacing: 0.3em;
-  color: ${({ theme }) => theme.colors.onInkSoft};
+  color: ${({ theme }) => theme.colors.textFaint};
 `

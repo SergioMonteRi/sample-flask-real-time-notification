@@ -1,21 +1,16 @@
 {
-  "eyebrow": "Comprovante de cobrança",
+  "eyebrow": "Cobrança Pix",
   "pending": {
     "title": "Aguardando o pagamento",
     "description": "Abra o app do seu banco, escolha <0>Pix com QR Code</0> e aponte a câmera para o código ao lado."
   },
   "paid": {
     "title": "Pagamento confirmado",
-    "description": "O banco confirmou a transferência. Este comprovante já vale como recibo.",
-    "stamp": "Pago"
+    "description": "O banco confirmou a transferência. Esta cobrança está quitada."
   },
   "expired": {
     "title": "Cobrança expirada",
-    "description": "O prazo deste QR Code terminou. Emita uma nova cobrança para continuar.",
-    "stamp": "Expirado"
-  },
-  "stamp": {
-    "pending": "Aguardando"
+    "description": "O prazo deste QR Code terminou. Emita uma nova cobrança para continuar."
   },
   "amountLabel": "Valor",
   "qrAlt": "QR Code do pagamento Pix",

@@ -11,8 +11,8 @@
   "steps": {
     "title": "Como funciona",
     "one": "O caixa registra a cobrança no Flask e pede um payload ao banco simulado.",
-    "two": "O comprovante é impresso com o QR Code do Pix e um contador de expiração.",
-    "three": "Quando o banco confirma, o comprovante recebe o carimbo de pago."
+    "two": "A tela mostra o QR Code do Pix com um contador de expiração.",
+    "three": "Quando o banco confirma, a cobrança é marcada como paga."
   },
   "errors": {
     "required": "Informe um valor para continuar.",

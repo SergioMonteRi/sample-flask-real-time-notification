@@ -1,5 +1,5 @@
 export * from './copy-field'
 export * from './countdown'
+export * from './detail-row'
 export * from './language-switch'
-export * from './receipt-line'
-export * from './status-stamp'
+export * from './status-badge'

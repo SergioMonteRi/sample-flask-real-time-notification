@@ -1,13 +1,13 @@
 {
   "notFound": {
-    "stamp": "Sem registro",
     "title": "Não encontramos esta cobrança",
-    "description": "Confira se o endereço está correto. Cobranças expiradas também deixam de ser exibidas."
+    "description": "Confira se o endereço está correto. Cobranças expiradas também deixam de ser exibidas.",
+    "badge": "Sem registro"
   },
   "boundary": {
-    "stamp": "Falha",
-    "title": "O terminal travou",
-    "description": "Algo quebrou ao desenhar esta tela. Recarregue o comprovante para tentar de novo."
+    "title": "Algo deu errado",
+    "description": "Algo quebrou ao desenhar esta tela. Recarregue a página para tentar de novo.",
+    "badge": "Falha"
   },
   "network": "Sem conexão com o servidor. Verifique se o Flask está rodando.",
   "unexpected": "Algo saiu do previsto. Tente novamente em instantes."

@@ -1,5 +1,4 @@
 import { BaseButton } from '@/components/atoms'
-import { chunkPayload } from '@/utils'
 
 import {
   CopyHeader,
@@ -39,11 +38,7 @@ export function CopyField({
         </BaseButton>
       </CopyHeader>
 
-      <PayloadBox>
-        {chunkPayload(value).map((block, index) => (
-          <span key={`${block}-${index}`}>{block}</span>
-        ))}
-      </PayloadBox>
+      <PayloadBox>{value}</PayloadBox>
 
       {hint && <CopyHint>{hint}</CopyHint>}
     </CopyWrapper>

@@ -9,7 +9,6 @@ type BaseTextProps = {
   variant?: BaseTextVariant
   tone?: BaseTextTone
   align?: 'left' | 'center' | 'right'
-  isItalic?: boolean
   id?: string
   className?: string
 }
@@ -18,9 +17,8 @@ export function BaseText({
   children,
   as = 'p',
   variant = 'body',
-  tone = 'ink',
+  tone = 'default',
   align,
-  isItalic = false,
   id,
   className,
 }: BaseTextProps) {
@@ -32,7 +30,6 @@ export function BaseText({
       $variant={variant}
       $tone={tone}
       $align={align}
-      $isItalic={isItalic}
     >
       {children}
     </StyledText>

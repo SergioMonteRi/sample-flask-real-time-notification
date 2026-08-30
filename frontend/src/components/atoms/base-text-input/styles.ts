@@ -15,7 +15,7 @@ export const FieldWrapper = styled.div`
 
 export const FieldLabel = styled.label`
   ${microLabel};
-  color: ${({ theme }) => theme.colors.graphiteSoft};
+  color: ${({ theme }) => theme.colors.textMuted};
 `
 
 export const InputShell = styled.div<FieldProps>`
@@ -23,25 +23,26 @@ export const InputShell = styled.div<FieldProps>`
   align-items: baseline;
   gap: ${({ theme }) => theme.spacing.sm};
   padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
-  border: 1px solid ${({ theme }) => theme.colors.paperEdge};
-  border-radius: ${({ theme }) => theme.radii.sm};
-  background-color: rgba(255, 255, 255, 0.42);
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.md};
+  background-color: ${({ theme }) => theme.colors.surface};
   transition:
     border-color ${({ theme }) => theme.transitions.fast},
     box-shadow ${({ theme }) => theme.transitions.fast};
 
   &:focus-within {
-    border-color: ${({ theme }) => theme.colors.graphite};
-    box-shadow: ${({ theme }) => theme.shadows.hardSmall};
+    border-color: ${({ theme }) => theme.colors.accent};
+    box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.accentSoft};
   }
 
   ${({ $hasError }) =>
     $hasError &&
     css`
-      border-color: ${({ theme }) => theme.colors.vermilion};
+      border-color: ${({ theme }) => theme.colors.danger};
 
       &:focus-within {
-        border-color: ${({ theme }) => theme.colors.vermilion};
+        border-color: ${({ theme }) => theme.colors.danger};
+        box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.dangerSoft};
       }
     `}
 `
@@ -49,7 +50,8 @@ export const InputShell = styled.div<FieldProps>`
 export const InputPrefix = styled.span`
   font-family: ${({ theme }) => theme.fonts.display};
   font-size: ${({ theme }) => theme.fontSizes.xl};
-  color: ${({ theme }) => theme.colors.graphiteSoft};
+  font-weight: 300;
+  color: ${({ theme }) => theme.colors.textFaint};
   user-select: none;
 `
 
@@ -60,16 +62,18 @@ export const StyledInput = styled.input`
   background: none;
   outline: none;
   font-family: ${({ theme }) => theme.fonts.display};
-  font-size: ${({ theme }) => theme.fontSizes.display};
+  font-size: ${({ theme }) => theme.fontSizes.amount};
+  font-weight: 300;
   font-variant-numeric: tabular-nums lining-nums;
-  line-height: 1.1;
-  color: ${({ theme }) => theme.colors.graphite};
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: ${({ theme }) => theme.colors.text};
 
   &::placeholder {
-    color: ${({ theme }) => theme.colors.paperEdge};
+    color: ${({ theme }) => theme.colors.textFaint};
+    opacity: 0.55;
   }
 
-  /* Remove os esporas do input numerico. */
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     appearance: none;
@@ -78,10 +82,9 @@ export const StyledInput = styled.input`
 `
 
 export const FieldMessage = styled.span<FieldProps>`
-  ${microLabel};
-  letter-spacing: 0.08em;
-  text-transform: none;
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  line-height: 1.5;
   animation: ${riseIn} ${({ theme }) => theme.transitions.base} both;
   color: ${({ theme, $hasError }) =>
-    $hasError ? theme.colors.vermilionDeep : theme.colors.graphiteFaint};
+    $hasError ? theme.colors.danger : theme.colors.textFaint};
 `

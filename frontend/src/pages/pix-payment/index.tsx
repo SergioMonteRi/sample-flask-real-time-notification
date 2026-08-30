@@ -1,9 +1,8 @@
 import { Trans, useTranslation } from 'react-i18next'
 
-import { BaseButton, BaseSpinner } from '@/components/atoms'
-import { CopyField, Countdown, StatusStamp } from '@/components/molecules'
-import { Receipt } from '@/components/organisms'
-import { maskIdentifier } from '@/utils'
+import { BaseButton, BaseSpinner, BaseText } from '@/components/atoms'
+import { CopyField, Countdown, StatusBadge } from '@/components/molecules'
+import { Card } from '@/components/organisms'
 
 import { NotFoundPage } from '../not-found'
 import {
@@ -19,9 +18,9 @@ import {
   AsideColumn,
   AsideDescription,
   AsideHeading,
+  CardColumn,
   LoadingPanel,
   PaymentLayout,
-  ReceiptColumn,
   StatusRow,
 } from './styles'
 import { usePixPayment } from './use-pix-payment'
@@ -32,7 +31,6 @@ export function PixPaymentPage() {
   const { t: tErrors } = useTranslation('errors')
 
   const {
-    paymentId,
     payment,
     status,
     countdown,
@@ -59,12 +57,14 @@ export function PixPaymentPage() {
 
   return (
     <PaymentLayout>
-      <ReceiptColumn>
-        <Receipt.Root>
-          <Receipt.Header
-            eyebrow={t('eyebrow')}
-            serial={maskIdentifier(paymentId, 4)}
-          />
+      <CardColumn>
+        <Card.Root>
+          <Card.Header>
+            <BaseText variant="micro" tone="faint">
+              {t('eyebrow')}
+            </BaseText>
+            <StatusBadge status={status} label={t(`status.${status}`)} />
+          </Card.Header>
 
           {payment?.pixPayload ? (
             <PixQrCode
@@ -89,33 +89,22 @@ export function PixPaymentPage() {
 
           {payment && <PaymentAmount value={payment.value} />}
 
-          {payment && (
+          {payment && status !== 'paid' && (
             <StatusRow>
-              {status !== 'paid' && (
-                <Countdown
-                  label={t('countdown.label')}
-                  expiredLabel={t('countdown.expired')}
-                  targetDate={payment.expirationDate}
-                  formattedTime={countdown.formattedTime}
-                  hasExpired={countdown.hasExpired}
-                  isCloseToExpiring={countdown.isCloseToExpiring}
-                />
-              )}
-
-              <StatusStamp status={status} label={t(`status.${status}`)} />
+              <Countdown
+                label={t('countdown.label')}
+                expiredLabel={t('countdown.expired')}
+                targetDate={payment.expirationDate}
+                formattedTime={countdown.formattedTime}
+                hasExpired={countdown.hasExpired}
+                isCloseToExpiring={countdown.isCloseToExpiring}
+              />
             </StatusRow>
           )}
 
-          {payment && (
+          {payment?.pixPayload && status === 'pending' && (
             <>
-              <Receipt.Divider label={t('details.title')} />
-              <PaymentDetails payment={payment} status={status} />
-            </>
-          )}
-
-          {payment?.pixPayload && (
-            <>
-              <Receipt.Divider />
+              <Card.Divider />
               <CopyField
                 label={t('copyPaste.label')}
                 hint={t('copyPaste.hint')}
@@ -127,9 +116,14 @@ export function PixPaymentPage() {
             </>
           )}
 
-          <Receipt.Footer caption={tCommon('brand.receiptLabel')} />
-        </Receipt.Root>
-      </ReceiptColumn>
+          {payment && (
+            <>
+              <Card.Divider />
+              <PaymentDetails payment={payment} status={status} />
+            </>
+          )}
+        </Card.Root>
+      </CardColumn>
 
       <AsideColumn>
         <AsideHeading>{t(`${status}.title`)}</AsideHeading>
@@ -156,7 +150,7 @@ export function PixPaymentPage() {
 
         <AsideActions>
           <BaseButton
-            variant="ghost"
+            variant="secondary"
             size="sm"
             onClick={handleCreateNewPayment}
           >

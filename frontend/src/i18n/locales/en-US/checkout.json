@@ -11,8 +11,8 @@
   "steps": {
     "title": "How it works",
     "one": "The register stores the charge in Flask and asks the simulated bank for a payload.",
-    "two": "The receipt prints with the Pix QR Code and an expiration countdown.",
-    "three": "Once the bank confirms, the receipt gets the paid stamp."
+    "two": "The screen shows the Pix QR Code with an expiration countdown.",
+    "three": "Once the bank confirms, the charge is marked as paid."
   },
   "errors": {
     "required": "Enter an amount to continue.",

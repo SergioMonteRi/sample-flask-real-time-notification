@@ -155,9 +155,9 @@ a confirmação vale apenas para a sessão atual do navegador.
 ```
 src/
   components/        # Atomic Design, só o que é realmente reutilizável
-    atoms/           # base-button, base-text, base-text-input, base-stamp…
-    molecules/       # countdown, copy-field, receipt-line, status-stamp…
-    organisms/       # receipt (Composition Pattern), app-shell, error-fallback
+    atoms/           # base-button, base-text, base-text-input, base-badge…
+    molecules/       # countdown, copy-field, detail-row, status-badge…
+    organisms/       # card (Composition Pattern), app-shell, error-fallback
   config/            # env.ts — único ponto que lê import.meta.env
   constants/         # app, routes, storage, regex
   hooks/             # hooks genéricos (use-countdown)
@@ -184,7 +184,7 @@ src/
   (`checkout.schema.ts`) guarda *chaves de tradução* como mensagem, então a
   validação é a única fonte de verdade e continua traduzida nos dois idiomas.
 - **i18n obrigatório**: nenhum texto visível está hardcoded no JSX.
-- **Composition Pattern** em `Receipt.Root / Header / Section / Divider / Footer`,
+- **Composition Pattern** em `Card.Root / Header / Section / Divider / Footer`,
   em vez de um componente com uma lista crescente de props.
 - **Barrel exports** em cada pasta, com alias `@/` para imports absolutos.
 
@@ -197,14 +197,17 @@ src/
 
 ## Direção visual
 
-**"Comprovante"** — a tela é um terminal de caixa: fundo de tinta quente com
-grade técnica e granulação, e o pagamento impresso em papel off-white com bordas
-serrilhadas. Serifada editorial (*Instrument Serif*) para os números, monoespaçada
-(*IBM Plex Mono*) para os dados. Vermelhão para o que exige ação, verde-musgo
-para o que já foi confirmado.
+**"Console claro"** — superfícies brancas sobre um fundo quente quase branco,
+hairlines de 1px no lugar de sombras pesadas e muito espaço em branco. A cor só
+aparece quando significa alguma coisa: preto para a ação principal, verde para
+confirmado, âmbar para aguardando, vermelho para erro.
 
-Os momentos de movimento são poucos e intencionais: o comprovante "sai da
-impressora" (`clip-path` de cima para baixo, com filhos escalonados), o leitor
-varre o QR Code enquanto o pagamento não cai, e o carimbo de pago desce grande e
-assenta torto — com o papel sacudindo no impacto. Tudo respeita
+Tipografia em três funções: *Fraunces* (serifada de peso leve) reservada para os
+títulos e o valor da cobrança, *Instrument Sans* para toda a interface e
+*DM Mono* para números, ids e o payload do Pix — com `tabular-nums` para as
+colunas não dançarem.
+
+O movimento é discreto e curto: entrada com um leve deslocamento vertical, o
+selo de confirmado assentando com um overshoot pequeno e o ponto de status
+pulsando enquanto o caixa consulta o banco. Tudo respeita
 `prefers-reduced-motion`.

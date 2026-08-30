@@ -1,67 +1,31 @@
 import { css } from 'styled-components'
 
-/** Borda serrilhada de comprovante, aplicada como mascara no papel. */
-export const perforatedEdges = css`
-  --perforation: ${({ theme }) => theme.layout.perforationSize};
-
-  mask-image:
-    radial-gradient(
-      var(--perforation) var(--perforation) at 50% 0,
-      transparent 0 calc(var(--perforation) - 1px),
-      #000 var(--perforation)
-    ),
-    radial-gradient(
-      var(--perforation) var(--perforation) at 50% 100%,
-      transparent 0 calc(var(--perforation) - 1px),
-      #000 var(--perforation)
-    ),
-    linear-gradient(#000, #000);
-  mask-size:
-    calc(var(--perforation) * 2) var(--perforation),
-    calc(var(--perforation) * 2) var(--perforation),
-    100% calc(100% - var(--perforation) * 2);
-  mask-position:
-    top left,
-    bottom left,
-    center;
-  mask-repeat: repeat-x, repeat-x, no-repeat;
-`
-
-/** Textura de papel: fibras finas por cima da cor de base. */
-export const paperGrain = css`
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      rgba(34, 31, 25, 0.028) 0 1px,
-      transparent 1px 3px
-    ),
-    radial-gradient(
-      circle at 18% 12%,
-      rgba(224, 71, 44, 0.05),
-      transparent 45%
-    ),
-    radial-gradient(circle at 88% 84%, rgba(47, 107, 69, 0.05), transparent 42%);
-`
-
-export const dashedRule = css`
-  border: 0;
-  border-top: 1px dashed ${({ theme }) => theme.colors.paperEdge};
-  margin: 0;
+/** Superficie branca com hairline — a base de todo bloco da interface. */
+export const surfaceCard = css`
+  background-color: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.lg};
 `
 
 /** Rotulo pequeno em caixa alta, com tracking largo. */
 export const microLabel = css`
-  font-family: ${({ theme }) => theme.fonts.mono};
+  font-family: ${({ theme }) => theme.fonts.sans};
   font-size: ${({ theme }) => theme.fontSizes.micro};
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+`
+
+export const hairline = css`
+  border: 0;
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
+  margin: 0;
 `
 
 export const focusRing = css`
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.vermilion};
-    outline-offset: 3px;
+    outline: 2px solid ${({ theme }) => theme.colors.accent};
+    outline-offset: 2px;
   }
 `
 

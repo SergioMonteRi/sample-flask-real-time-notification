@@ -1,8 +1,7 @@
 {
   "brand": {
     "name": "Caixa Pix",
-    "tagline": "Payment terminal",
-    "receiptLabel": "Customer copy"
+    "tagline": "Pix charges"
   },
   "actions": {
     "copy": "Copy code",
@@ -18,7 +17,7 @@
     "enUS": "EN"
   },
   "footer": {
-    "note": "Study environment · simulated bank · no real money moves here"
+    "note": "Study environment · simulated bank · no real money moves here."
   },
   "loading": "Loading"
 }

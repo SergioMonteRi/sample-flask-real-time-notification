@@ -6,49 +6,44 @@ export type BaseTextVariant =
   'hero' | 'display' | 'title' | 'body' | 'label' | 'micro' | 'data' | 'amount'
 
 export type BaseTextTone =
-  | 'ink'
-  | 'inkSoft'
-  | 'inkFaint'
-  | 'paper'
-  | 'paperSoft'
-  | 'accent'
-  | 'success'
-  | 'warning'
+  'default' | 'muted' | 'faint' | 'accent' | 'pending' | 'danger' | 'onDark'
 
 interface StyledTextProps {
   $variant: BaseTextVariant
   $tone: BaseTextTone
   $align?: 'left' | 'center' | 'right'
-  $isItalic?: boolean
 }
 
 const variantStyles = {
   hero: css`
     font-family: ${({ theme }) => theme.fonts.display};
     font-size: ${({ theme }) => theme.fontSizes.hero};
-    line-height: 0.82;
-    letter-spacing: -0.03em;
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
   `,
   display: css`
     font-family: ${({ theme }) => theme.fonts.display};
     font-size: ${({ theme }) => theme.fontSizes.display};
-    line-height: 0.98;
-    letter-spacing: -0.015em;
+    font-weight: 300;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
   `,
   title: css`
     font-family: ${({ theme }) => theme.fonts.display};
     font-size: ${({ theme }) => theme.fontSizes.xl};
-    line-height: 1.1;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
   `,
   body: css`
-    font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: ${({ theme }) => theme.fontSizes.sm};
-    line-height: 1.7;
+    font-size: ${({ theme }) => theme.fontSizes.md};
+    line-height: 1.65;
   `,
   label: css`
     ${microLabel};
     font-size: ${({ theme }) => theme.fontSizes.xs};
-    letter-spacing: 0.14em;
+    letter-spacing: 0.08em;
   `,
   micro: css`
     ${microLabel};
@@ -56,43 +51,39 @@ const variantStyles = {
   data: css`
     font-family: ${({ theme }) => theme.fonts.mono};
     font-size: ${({ theme }) => theme.fontSizes.sm};
-    font-weight: 500;
     font-variant-numeric: tabular-nums;
-    letter-spacing: 0.01em;
   `,
   amount: css`
     font-family: ${({ theme }) => theme.fonts.display};
-    font-size: ${({ theme }) => theme.fontSizes.display};
+    font-size: ${({ theme }) => theme.fontSizes.amount};
+    font-weight: 300;
     font-variant-numeric: tabular-nums lining-nums;
     line-height: 1;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
   `,
 } as const satisfies Record<BaseTextVariant, ReturnType<typeof css>>
 
 const toneStyles = {
-  ink: css`
-    color: ${({ theme }) => theme.colors.graphite};
+  default: css`
+    color: ${({ theme }) => theme.colors.text};
   `,
-  inkSoft: css`
-    color: ${({ theme }) => theme.colors.graphiteSoft};
+  muted: css`
+    color: ${({ theme }) => theme.colors.textMuted};
   `,
-  inkFaint: css`
-    color: ${({ theme }) => theme.colors.graphiteFaint};
-  `,
-  paper: css`
-    color: ${({ theme }) => theme.colors.onInk};
-  `,
-  paperSoft: css`
-    color: ${({ theme }) => theme.colors.onInkSoft};
+  faint: css`
+    color: ${({ theme }) => theme.colors.textFaint};
   `,
   accent: css`
-    color: ${({ theme }) => theme.colors.vermilion};
+    color: ${({ theme }) => theme.colors.accent};
   `,
-  success: css`
-    color: ${({ theme }) => theme.colors.moss};
+  pending: css`
+    color: ${({ theme }) => theme.colors.pending};
   `,
-  warning: css`
-    color: ${({ theme }) => theme.colors.amber};
+  danger: css`
+    color: ${({ theme }) => theme.colors.danger};
+  `,
+  onDark: css`
+    color: ${({ theme }) => theme.colors.onDark};
   `,
 } as const satisfies Record<BaseTextTone, ReturnType<typeof css>>
 
@@ -100,7 +91,6 @@ export const StyledText = styled.span<StyledTextProps>`
   display: block;
   margin: 0;
   text-align: ${({ $align }) => $align ?? 'inherit'};
-  font-style: ${({ $isItalic }) => ($isItalic ? 'italic' : 'normal')};
 
   ${({ $variant }) => variantStyles[$variant]};
   ${({ $tone }) => toneStyles[$tone]};

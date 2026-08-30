@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import { ReceiptLine } from '@/components/molecules'
+import { DetailRow } from '@/components/molecules'
 import type { PixPayment, PixPaymentStatus } from '@/services/payments'
 import { formatDateTime, maskIdentifier } from '@/utils'
 
@@ -16,23 +16,21 @@ export function PaymentDetails({ payment, status }: PaymentDetailsProps) {
 
   return (
     <DetailsList>
-      <ReceiptLine label={t('details.paymentId')}>
+      <DetailRow label={t('details.paymentId')}>
         {maskIdentifier(payment.id, 6)}
-      </ReceiptLine>
+      </DetailRow>
 
       {payment.bankPaymentId && (
-        <ReceiptLine label={t('details.bankPaymentId')}>
+        <DetailRow label={t('details.bankPaymentId')}>
           {maskIdentifier(payment.bankPaymentId, 6)}
-        </ReceiptLine>
+        </DetailRow>
       )}
 
-      <ReceiptLine label={t('details.expiresAt')}>
+      <DetailRow label={t('details.expiresAt')}>
         {formatDateTime(payment.expirationDate, i18n.resolvedLanguage)}
-      </ReceiptLine>
+      </DetailRow>
 
-      <ReceiptLine label={t('details.status')}>
-        {t(`status.${status}`)}
-      </ReceiptLine>
+      <DetailRow label={t('details.status')}>{t(`status.${status}`)}</DetailRow>
     </DetailsList>
   )
 }
