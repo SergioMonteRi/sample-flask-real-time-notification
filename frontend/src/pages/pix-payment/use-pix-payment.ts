@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -5,6 +6,7 @@ import { toast } from 'sonner'
 import { ROUTES } from '@/constants'
 import type { CountdownState } from '@/hooks'
 import { useCountdown } from '@/hooks'
+import type { ApiErrorKind } from '@/services/http'
 import { isNotFoundError, normalizeApiError } from '@/services/http'
 import type { PixPayment, PixPaymentStatus } from '@/services/payments'
 import {
@@ -37,6 +39,16 @@ const resolveStatus = (
   if (hasExpired) return 'expired'
 
   return 'pending'
+}
+
+const resolveLoadErrorMessage = (
+  errorKind: ApiErrorKind | null,
+  tErrors: TFunction<'errors'>,
+): string | null => {
+  if (!errorKind || errorKind === 'not-found') return null
+  if (errorKind === 'contract') return tErrors('contract')
+
+  return tErrors('network')
 }
 
 export const usePixPayment = (): UsePixPaymentReturn => {
@@ -89,11 +101,7 @@ export const usePixPayment = (): UsePixPaymentReturn => {
     isChecking: isFetching,
     isNotFound: isError && isNotFoundError(error),
     isRealtimeConnected,
-    /* O erro de carga aparece inline no cartao, e nao como toast. */
-    loadErrorMessage:
-      errorKind && errorKind !== 'not-found'
-        ? tErrors(errorKind === 'contract' ? 'contract' : 'network')
-        : null,
+    loadErrorMessage: resolveLoadErrorMessage(errorKind, tErrors),
     isConfirming,
     canSimulateConfirmation,
     handleSimulateConfirmation,
