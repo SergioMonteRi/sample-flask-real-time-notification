@@ -23,15 +23,23 @@ class PaymentService:
         pix_payment = self.pix_provider.create_payment(
             value=value
         )
-          
-        return Payment(
+
+        new_payment = Payment(
             value=value,
             expiration_date=expiration_date,
             bank_payment_id=pix_payment.bank_payment_id,
             pix_payload=pix_payment.pix_payload
         )
 
-    @staticmethod
+        try:
+            db.session.add(new_payment)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
+
+        return new_payment
+
     def confirm_payment(self, bank_payment_id: UUID) -> Payment | None:
         stmt = select(Payment).where(
             Payment.bank_payment_id == bank_payment_id
@@ -62,3 +70,13 @@ class PaymentService:
         )
 
         return payment
+
+    def get_payment_by_id(
+    self,
+    payment_id: UUID
+    ) -> Payment | None:
+        stmt = select(Payment).where(
+            Payment.id == payment_id
+        )
+
+        return db.session.scalar(stmt)

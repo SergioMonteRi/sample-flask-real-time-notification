@@ -5,11 +5,11 @@ from sqlalchemy import select
 
 from repository.database import db
 from models.payment import Payment
-from services.payment_service import PaymentService
-from integrations.payments.fake_bank.pix.provider import FakePixProvider
 from schemas.get_payment_response import PaymentResponse
 from schemas.confirm_payment import ConfirmPaymentRequest
 from schemas.create_payment import CreatePaymentRequest, CreatePaymentResponse
+
+from services.factories import create_payment_service
 
 pix_bp = Blueprint("pix", __name__)
 
@@ -25,19 +25,11 @@ def create_pix_payment():
             "details": e.errors()
         }), 400
 
-    pix_provider = FakePixProvider()
-    payment_service = PaymentService(pix_provider=pix_provider)
+    payment_service = create_payment_service()
 
     payment_data = payment_service.create_pix_payment(
         value=create_payment_data.value
     )
-
-    try:
-        db.session.add(payment_data)
-        db.session.commit()
-    except Exception:
-        db.session.rollback()
-        raise
 
     payment_response = CreatePaymentResponse.model_validate(payment_data)
 
@@ -48,18 +40,18 @@ def create_pix_payment():
 
 @pix_bp.route("/payments/pix/<uuid:payment_id>", methods=["GET"])
 def get_pix_payment_by_id(payment_id: UUID):
-    stmt = select(Payment).where(
-        Payment.id == payment_id
+    payment_service = create_payment_service()
+
+    payment = payment_service.get_payment_by_id(
+        payment_id=payment_id
     )
 
-    current_payment = db.session.scalar(statement=stmt)
-
-    if current_payment is None:
+    if payment is None:
         return jsonify({
             "error": "Payment not found"
         }), 404
 
-    payment_response = PaymentResponse.model_validate(current_payment)
+    payment_response = PaymentResponse.model_validate(payment)
 
     return jsonify(
         payment_response.model_dump(mode="json")
@@ -77,7 +69,9 @@ def pix_confirmation():
             "details": e.errors()
         }), 400
 
-    payment = PaymentService.confirm_payment(
+    payment_service = create_payment_service()
+
+    payment = payment_service.confirm_payment(
         bank_payment_id=request_data.bank_payment_id
     )
 
