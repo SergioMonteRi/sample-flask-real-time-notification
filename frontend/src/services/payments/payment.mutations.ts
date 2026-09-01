@@ -3,15 +3,10 @@ import { mutationOptions } from '@tanstack/react-query'
 
 import { paymentKeys, paymentQueries } from './payment.queries'
 import { paymentService } from './payment.service'
-import type {
-  CreatePixPaymentRequest,
-  PixPayment,
-  PixPaymentDetail,
-} from './payment.types'
-import { paymentSnapshot } from './payment-snapshot.utils'
+import type { CreatePixPaymentRequest, PixPayment } from './payment.types'
 
 interface ConfirmMutationContext {
-  previousDetail: PixPaymentDetail | undefined
+  previousPayment: PixPayment | undefined
 }
 
 export const paymentMutations = {
@@ -26,16 +21,9 @@ export const paymentMutations = {
         return response.payment
       },
       onSuccess: (payment) => {
-        /* Semeia o cache para que o cartao abra sem um segundo request. */
-        paymentSnapshot.save(payment)
-
         queryClient.setQueryData(
           paymentQueries.pixDetail(payment.id).queryKey,
-          {
-            paymentId: payment.id,
-            payment,
-            isFromLocalSnapshot: false,
-          },
+          payment,
         )
       },
       meta: { errorMessageKey: 'checkout:errors.createFailed' },
@@ -55,23 +43,18 @@ export const paymentMutations = {
       onMutate: async (): Promise<ConfirmMutationContext> => {
         await queryClient.cancelQueries({ queryKey })
 
-        const previousDetail = queryClient.getQueryData(queryKey)
+        const previousPayment = queryClient.getQueryData(queryKey)
 
         queryClient.setQueryData(queryKey, (current) =>
-          current?.payment
-            ? { ...current, payment: { ...current.payment, isPaid: true } }
-            : current,
+          current ? { ...current, isPaid: true } : current,
         )
 
-        return { previousDetail }
+        return { previousPayment }
       },
       onError: (_error, _variables, context) => {
-        if (context?.previousDetail) {
-          queryClient.setQueryData(queryKey, context.previousDetail)
+        if (context?.previousPayment) {
+          queryClient.setQueryData(queryKey, context.previousPayment)
         }
-      },
-      onSuccess: () => {
-        paymentSnapshot.markAsPaid(paymentId)
       },
       onSettled: () => {
         void queryClient.invalidateQueries({ queryKey })

@@ -22,11 +22,4 @@ export interface CreatePixPaymentRequest {
   value: number
 }
 
-/** Resultado da consulta de uma cobranca, com a origem do dado. */
-export interface PixPaymentDetail {
-  paymentId: string
-  payment: PixPayment | null
-  isFromLocalSnapshot: boolean
-}
-
 export type PixPaymentStatus = 'pending' | 'paid' | 'expired'

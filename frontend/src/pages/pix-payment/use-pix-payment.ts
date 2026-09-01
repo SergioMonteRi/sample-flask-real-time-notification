@@ -46,7 +46,7 @@ export const usePixPayment = (): UsePixPaymentReturn => {
     paymentId,
   })
 
-  const payment = data?.payment ?? null
+  const payment = data ?? null
   const countdown = useCountdown({ targetDate: payment?.expirationDate })
   const status = resolveStatus(payment, countdown.hasExpired)
 

@@ -29,16 +29,7 @@ export const createPixPaymentResponseSchema = z.object({
   payment: pixPaymentSchema,
 })
 
-/**
- * `GET /payments/pix/<id>` ainda nao devolve o pagamento. `payment` fica
- * opcional para que o front passe a usar o dado real assim que a rota for
- * implementada, sem mudar nenhuma outra linha.
- */
-export const getPixPaymentResponseSchema = z.object({
-  message: z.string(),
-  payment_id: z.string(),
-  payment: pixPaymentSchema.nullish(),
-})
+export const getPixPaymentResponseSchema = pixPaymentSchema
 
 export const confirmPixPaymentResponseSchema = z.object({
   message: z.string(),
