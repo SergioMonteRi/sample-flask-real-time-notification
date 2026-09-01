@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta
-
 from uuid import UUID
 from flask import jsonify, Blueprint, request
 from pydantic import ValidationError
@@ -10,6 +8,7 @@ from models.payment import Payment
 from services.payment_service import PaymentService
 from integrations.payments.fake_bank.pix.provider import FakePixProvider
 from schemas.get_payment_response import PaymentResponse
+from schemas.confirm_payment import ConfirmPaymentRequest
 from schemas.create_payment import CreatePaymentRequest, CreatePaymentResponse
 
 pix_bp = Blueprint("pix", __name__)
@@ -47,12 +46,6 @@ def create_pix_payment():
         "payment": payment_response.model_dump(mode="json")
     }), 201
 
-@pix_bp.route("/payments/pix/confirmation", methods=["POST"])
-def pix_confirmation():
-    return jsonify({
-        "message": "The payment has been confirmed"
-    }), 200
-
 @pix_bp.route("/payments/pix/<uuid:payment_id>", methods=["GET"])
 def get_pix_payment_by_id(payment_id: UUID):
     stmt = select(Payment).where(
@@ -71,3 +64,28 @@ def get_pix_payment_by_id(payment_id: UUID):
     return jsonify(
         payment_response.model_dump(mode="json")
     )
+
+@pix_bp.route("/payments/pix/confirmation", methods=["POST"])
+def pix_confirmation():
+    try:
+        request_data = ConfirmPaymentRequest.model_validate(
+            request.json
+        )
+    except ValidationError as e:
+        return jsonify({
+            "error": "Invalid confirm payment data",
+            "details": e.errors()
+        }), 400
+
+    payment = PaymentService.confirm_payment(
+        bank_payment_id=request_data.bank_payment_id
+    )
+
+    if payment is None:
+        return jsonify({
+            "error": "Payment not found"
+        }), 404
+
+    return jsonify({
+        "message": "The payment has been confirmed"
+    }), 200

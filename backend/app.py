@@ -4,6 +4,7 @@ from flask import Flask
 from dotenv import load_dotenv
 
 from repository.database import db
+from extensions import socketio
 
 
 load_dotenv()
@@ -17,10 +18,11 @@ def create_app():
     )
 
     db.init_app(app)
+    socketio.init_app(app)
 
     from models.payment import Payment
-
     from routes.pix import pix_bp
+    from sockets import payment as payment_socket
 
     app.register_blueprint(pix_bp)
 
@@ -29,4 +31,4 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, debug=True)
