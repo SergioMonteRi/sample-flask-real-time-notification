@@ -31,8 +31,9 @@ export const createPixPaymentResponseSchema = z.object({
 
 export const getPixPaymentResponseSchema = pixPaymentSchema
 
-export const confirmPixPaymentResponseSchema = z.object({
-  message: z.string(),
+/** `POST /webhooks/pix` responde apenas se aceitou a notificacao do banco. */
+export const pixWebhookResponseSchema = z.object({
+  status: z.string(),
 })
 
 /**

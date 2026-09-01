@@ -8,9 +8,9 @@ import { useCountdown } from '@/hooks'
 import { isNotFoundError, normalizeApiError } from '@/services/http'
 import type { PixPayment, PixPaymentStatus } from '@/services/payments'
 import {
-  useConfirmPixPaymentMutation,
   usePixPaymentQuery,
   usePixPaymentRealtime,
+  useSimulateBankWebhookMutation,
 } from '@/services/payments'
 
 interface UsePixPaymentReturn {
@@ -23,6 +23,7 @@ interface UsePixPaymentReturn {
   isRealtimeConnected: boolean
   loadErrorMessage: string | null
   isConfirming: boolean
+  canSimulateConfirmation: boolean
   handleSimulateConfirmation: () => void
   handleCopyError: () => void
   handleCreateNewPayment: () => void
@@ -58,11 +59,19 @@ export const usePixPayment = (): UsePixPaymentReturn => {
   const countdown = useCountdown({ targetDate: payment?.expirationDate })
   const status = resolveStatus(payment, countdown.hasExpired)
 
-  const { mutate: confirmPayment, isPending: isConfirming } =
-    useConfirmPixPaymentMutation(paymentId)
+  const { mutate: sendWebhook, isPending: isConfirming } =
+    useSimulateBankWebhookMutation(paymentId)
+
+  /* O webhook e identificado pelo id do banco, nao pelo id da cobranca. */
+  const bankPaymentId = payment?.bankPaymentId ?? null
+  const canSimulateConfirmation = status === 'pending' && Boolean(bankPaymentId)
 
   /* Sucesso e erro desta mutation saem do `meta`, no QueryClient. */
-  const handleSimulateConfirmation = () => confirmPayment()
+  const handleSimulateConfirmation = () => {
+    if (!bankPaymentId) return
+
+    sendWebhook({ bankPaymentId })
+  }
 
   const handleCopyError = () => toast.error(t('errors.copyFailed'))
 
@@ -86,6 +95,7 @@ export const usePixPayment = (): UsePixPaymentReturn => {
         ? tErrors(errorKind === 'contract' ? 'contract' : 'network')
         : null,
     isConfirming,
+    canSimulateConfirmation,
     handleSimulateConfirmation,
     handleCopyError,
     handleCreateNewPayment,

@@ -46,9 +46,9 @@
   },
   "simulation": {
     "title": "Bancada de testes",
-    "description": "Dispara POST /payments/pix/confirmation, o endpoint que o banco chamará quando o pagamento cair.",
+    "description": "Dispara POST /webhooks/pix fingindo ser o banco. A confirmação não volta nesta resposta: ela chega pelo canal em tempo real.",
     "action": "Simular confirmação do banco",
-    "running": "Chamando o banco"
+    "running": "Chamando o webhook"
   },
   "missingPayload": {
     "title": "QR Code indisponível nesta sessão",
@@ -57,10 +57,10 @@
   "errors": {
     "loadFailed": "Não foi possível carregar esta cobrança.",
     "copyFailed": "Não conseguimos copiar o código. Copie manualmente.",
-    "confirmFailed": "O banco simulado não respondeu. Tente novamente."
+    "webhookFailed": "O webhook não aceitou a notificação. Tente novamente."
   },
   "success": {
-    "confirmed": "O banco confirmou o pagamento."
+    "webhookSent": "Webhook notificado. Aguardando o aviso do canal."
   },
   "qrCaption": "Aponte a câmera do app do banco"
 }

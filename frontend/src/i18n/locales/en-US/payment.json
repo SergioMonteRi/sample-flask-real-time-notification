@@ -46,9 +46,9 @@
   },
   "simulation": {
     "title": "Test bench",
-    "description": "Fires POST /payments/pix/confirmation, the endpoint the bank will call once the payment lands.",
+    "description": "Fires POST /webhooks/pix pretending to be the bank. The confirmation does not come back in that response: it arrives over the real-time channel.",
     "action": "Simulate bank confirmation",
-    "running": "Calling the bank"
+    "running": "Calling the webhook"
   },
   "missingPayload": {
     "title": "QR Code unavailable in this session",
@@ -57,10 +57,10 @@
   "errors": {
     "loadFailed": "We could not load this charge.",
     "copyFailed": "We could not copy the code. Please copy it manually.",
-    "confirmFailed": "The simulated bank did not answer. Try again."
+    "webhookFailed": "The webhook did not accept the notification. Try again."
   },
   "success": {
-    "confirmed": "The bank confirmed the payment."
+    "webhookSent": "Webhook notified. Waiting for the channel."
   },
   "qrCaption": "Point your banking app camera here"
 }

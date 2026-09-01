@@ -5,10 +5,6 @@ import { paymentKeys, paymentQueries } from './payment.queries'
 import { paymentService } from './payment.service'
 import type { CreatePixPaymentRequest, PixPayment } from './payment.types'
 
-interface ConfirmMutationContext {
-  previousPayment: PixPayment | undefined
-}
-
 export const paymentMutations = {
   createPix: (queryClient: QueryClient) =>
     mutationOptions({
@@ -30,38 +26,26 @@ export const paymentMutations = {
     }),
 
   /**
-   * Dispara o endpoint que o banco chamara quando o Pix cair.
-   * Optimistic update: o status muda na hora e volta atras se o servidor
-   * recusar.
+   * Bancada de testes: faz o papel do banco chamando `POST /webhooks/pix`.
+   *
+   * Sem optimistic update de proposito. Quem sabe que a cobranca foi paga e
+   * o servidor, e ele avisa pelo socket — a resposta do webhook diz apenas
+   * que a notificacao foi aceita. Antecipar `isPaid` aqui esconderia
+   * justamente o caminho que esta tela existe para mostrar.
    */
-  confirmPix: (queryClient: QueryClient, paymentId: string) => {
+  simulateBankWebhook: (queryClient: QueryClient, paymentId: string) => {
     const { queryKey } = paymentQueries.pixDetail(paymentId)
 
     return mutationOptions({
-      mutationKey: [...paymentKeys.pixDetail(paymentId), 'confirm'],
-      mutationFn: paymentService.confirmPixPayment,
-      onMutate: async (): Promise<ConfirmMutationContext> => {
-        await queryClient.cancelQueries({ queryKey })
-
-        const previousPayment = queryClient.getQueryData(queryKey)
-
-        queryClient.setQueryData(queryKey, (current) =>
-          current ? { ...current, isPaid: true } : current,
-        )
-
-        return { previousPayment }
-      },
-      onError: (_error, _variables, context) => {
-        if (context?.previousPayment) {
-          queryClient.setQueryData(queryKey, context.previousPayment)
-        }
-      },
+      mutationKey: [...paymentKeys.pixDetail(paymentId), 'webhook'],
+      mutationFn: paymentService.sendPixWebhook,
+      /* Rede de seguranca: se o canal estiver fora, a consulta resolve. */
       onSettled: () => {
         void queryClient.invalidateQueries({ queryKey })
       },
       meta: {
-        errorMessageKey: 'payment:errors.confirmFailed',
-        successMessageKey: 'payment:success.confirmed',
+        errorMessageKey: 'payment:errors.webhookFailed',
+        successMessageKey: 'payment:success.webhookSent',
       },
     })
   },

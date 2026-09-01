@@ -39,6 +39,7 @@ export function PixPaymentPage() {
     isRealtimeConnected,
     loadErrorMessage,
     isConfirming,
+    canSimulateConfirmation,
     handleSimulateConfirmation,
     handleCopyError,
     handleCreateNewPayment,
@@ -145,7 +146,7 @@ export function PixPaymentPage() {
 
         <BankSimulator
           isConfirming={isConfirming}
-          isDisabled={status !== 'pending'}
+          isDisabled={!canSimulateConfirmation}
           onConfirm={handleSimulateConfirmation}
         />
 

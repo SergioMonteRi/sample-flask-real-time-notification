@@ -1,18 +1,20 @@
 import { apiClient } from '@/services/http'
 
 import {
-  confirmPixPaymentResponseSchema,
   createPixPaymentResponseSchema,
   getPixPaymentResponseSchema,
+  pixWebhookResponseSchema,
 } from './payment.schemas'
 import type {
-  ConfirmPixPaymentResponse,
   CreatePixPaymentRequest,
   CreatePixPaymentResponse,
   GetPixPaymentResponse,
+  PixWebhookResponse,
+  SendPixWebhookRequest,
 } from './payment.types'
 
 const PIX_ENDPOINT = '/payments/pix'
+const PIX_WEBHOOK_ENDPOINT = '/webhooks/pix'
 
 export const paymentService = {
   createPixPayment: async (
@@ -29,9 +31,13 @@ export const paymentService = {
     return getPixPaymentResponseSchema.parse(data)
   },
 
-  confirmPixPayment: async (): Promise<ConfirmPixPaymentResponse> => {
-    const { data } = await apiClient.post(`${PIX_ENDPOINT}/confirmation`)
+  sendPixWebhook: async ({
+    bankPaymentId,
+  }: SendPixWebhookRequest): Promise<PixWebhookResponse> => {
+    const { data } = await apiClient.post(PIX_WEBHOOK_ENDPOINT, {
+      bank_payment_id: bankPaymentId,
+    })
 
-    return confirmPixPaymentResponseSchema.parse(data)
+    return pixWebhookResponseSchema.parse(data)
   },
 }
