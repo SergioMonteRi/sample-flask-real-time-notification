@@ -21,10 +21,14 @@ def create_app():
     socketio.init_app(app)
 
     from models.payment import Payment
+
     from routes.pix import pix_bp
+    from routes.webhooks import webhook_bp
+
     from sockets import payment as payment_socket
 
     app.register_blueprint(pix_bp)
+    app.register_blueprint(webhook_bp)
 
     return app
 
