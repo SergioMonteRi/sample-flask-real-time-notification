@@ -53,30 +53,3 @@ def get_pix_payment_by_id(payment_id: UUID):
     return jsonify(
         payment_response.model_dump(mode="json")
     )
-
-# @pix_bp.route("/payments/pix/confirmation", methods=["POST"])
-# def pix_confirmation():
-#     try:
-#         request_data = ConfirmPaymentRequest.model_validate(
-#             request.json
-#         )
-#     except ValidationError as e:
-#         return jsonify({
-#             "error": "Invalid confirm payment data",
-#             "details": e.errors()
-#         }), 400
-
-#     payment_service = create_payment_service()
-
-#     payment = payment_service.confirm_payment(
-#         bank_payment_id=request_data.bank_payment_id
-#     )
-
-#     if payment is None:
-#         return jsonify({
-#             "error": "Payment not found"
-#         }), 404
-
-#     return jsonify({
-#         "message": "The payment has been confirmed"
-#     }), 200

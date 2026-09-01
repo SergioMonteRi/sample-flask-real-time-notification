@@ -1,4 +1,3 @@
-import qrcode
 from uuid import uuid7
 from decimal import Decimal
 
