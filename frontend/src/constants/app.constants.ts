@@ -7,5 +7,10 @@ export const APP = {
   expirationWarningSeconds: 5 * 60,
   /** Intervalo de consulta enquanto o pagamento nao e confirmado. */
   paymentPollingIntervalMs: 5000,
+  /**
+   * Com o canal em tempo real ativo, a confirmacao chega pelo socket e a
+   * consulta vira apenas rede de seguranca — por isso o intervalo folgado.
+   */
+  paymentRealtimeFallbackIntervalMs: 30000,
   httpTimeoutMs: 15000,
 } as const

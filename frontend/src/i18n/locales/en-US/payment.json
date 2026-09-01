@@ -37,7 +37,12 @@
   },
   "listening": {
     "checking": "Checking with the bank",
-    "interval": "Re-checking every {{seconds}}s"
+    "interval": "Re-checking every {{seconds}}s",
+    "channel": {
+      "connected": "Real-time channel connected",
+      "connecting": "Connecting to the real-time channel"
+    },
+    "fallback": "The bank pushes the update · double-check every {{seconds}}s"
   },
   "simulation": {
     "title": "Test bench",

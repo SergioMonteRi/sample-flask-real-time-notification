@@ -2,6 +2,8 @@ import styled, { css } from 'styled-components'
 
 import { microLabel, softPulse, surfaceCard } from '@/styles'
 
+import type { ConsoleDotState } from './payment-console.utils'
+
 export const ConsolePanel = styled.section`
   ${surfaceCard};
 
@@ -22,16 +24,28 @@ export const ConsoleRow = styled.div`
   gap: ${({ theme }) => theme.spacing.xs};
 `
 
-export const LiveDot = styled.span<{ $isActive: boolean }>`
+const DOT_COLOR = {
+  live: css`
+    background-color: ${({ theme }) => theme.colors.accent};
+  `,
+  waiting: css`
+    background-color: ${({ theme }) => theme.colors.pending};
+  `,
+  off: css`
+    background-color: ${({ theme }) => theme.colors.borderStrong};
+  `,
+}
+
+export const LiveDot = styled.span<{ $state: ConsoleDotState }>`
   width: 7px;
   height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
-  background-color: ${({ theme, $isActive }) =>
-    $isActive ? theme.colors.accent : theme.colors.borderStrong};
 
-  ${({ $isActive }) =>
-    $isActive &&
+  ${({ $state }) => DOT_COLOR[$state]};
+
+  ${({ $state }) =>
+    $state !== 'off' &&
     css`
       animation: ${softPulse} 1.4s ease-in-out infinite;
     `}

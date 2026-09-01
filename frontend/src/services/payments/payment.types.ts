@@ -4,6 +4,7 @@ import type {
   confirmPixPaymentResponseSchema,
   createPixPaymentResponseSchema,
   getPixPaymentResponseSchema,
+  paymentConfirmedEventSchema,
   pixPaymentSchema,
 } from './payment.schemas'
 
@@ -17,6 +18,8 @@ export type GetPixPaymentResponse = z.infer<typeof getPixPaymentResponseSchema>
 export type ConfirmPixPaymentResponse = z.infer<
   typeof confirmPixPaymentResponseSchema
 >
+
+export type PaymentConfirmedEvent = z.infer<typeof paymentConfirmedEventSchema>
 
 export interface CreatePixPaymentRequest {
   value: number

@@ -10,6 +10,7 @@ import type { PixPayment, PixPaymentStatus } from '@/services/payments'
 import {
   useConfirmPixPaymentMutation,
   usePixPaymentQuery,
+  usePixPaymentRealtime,
 } from '@/services/payments'
 
 interface UsePixPaymentReturn {
@@ -19,6 +20,7 @@ interface UsePixPaymentReturn {
   isLoading: boolean
   isChecking: boolean
   isNotFound: boolean
+  isRealtimeConnected: boolean
   loadErrorMessage: string | null
   isConfirming: boolean
   handleSimulateConfirmation: () => void
@@ -42,8 +44,14 @@ export const usePixPayment = (): UsePixPaymentReturn => {
   const { t: tErrors } = useTranslation('errors')
   const navigate = useNavigate()
 
+  /* Assina antes de consultar: a query usa o canal para dosar o polling. */
+  const { isConnected: isRealtimeConnected } = usePixPaymentRealtime({
+    paymentId,
+  })
+
   const { data, error, isError, isLoading, isFetching } = usePixPaymentQuery({
     paymentId,
+    isRealtimeConnected,
   })
 
   const payment = data ?? null
@@ -71,6 +79,7 @@ export const usePixPayment = (): UsePixPaymentReturn => {
     isLoading,
     isChecking: isFetching,
     isNotFound: isError && isNotFoundError(error),
+    isRealtimeConnected,
     /* O erro de carga aparece inline no cartao, e nao como toast. */
     loadErrorMessage:
       errorKind && errorKind !== 'not-found'

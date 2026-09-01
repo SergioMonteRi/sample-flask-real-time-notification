@@ -34,3 +34,11 @@ export const getPixPaymentResponseSchema = pixPaymentSchema
 export const confirmPixPaymentResponseSchema = z.object({
   message: z.string(),
 })
+
+/**
+ * Payload de `payment-confirmed`. O socket e uma fronteira como qualquer
+ * outra: o que chega dele tambem passa pelo Zod antes de virar estado.
+ */
+export const paymentConfirmedEventSchema = z
+  .object({ payment_id: z.string() })
+  .transform((event) => ({ paymentId: event.payment_id }))

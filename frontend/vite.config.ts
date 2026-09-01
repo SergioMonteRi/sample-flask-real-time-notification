@@ -5,6 +5,7 @@ import { defineConfig, loadEnv } from 'vite'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
+  const proxyTarget = env.VITE_API_PROXY_TARGET ?? 'http://127.0.0.1:5000'
 
   return {
     plugins: [react()],
@@ -20,9 +21,20 @@ export default defineConfig(({ mode }) => {
          * alteracao no projeto Python.
          */
         '/api': {
-          target: env.VITE_API_PROXY_TARGET ?? 'http://127.0.0.1:5000',
+          target: proxyTarget,
           changeOrigin: true,
           rewrite: (requestPath) => requestPath.replace(/^\/api/, ''),
+        },
+
+        /**
+         * Canal do Flask-SocketIO. `ws: true` repassa o upgrade para
+         * WebSocket, e a ausencia de `rewrite` e proposital: o Engine.IO
+         * atende exatamente em /socket.io no backend.
+         */
+        '/socket.io': {
+          target: proxyTarget,
+          changeOrigin: true,
+          ws: true,
         },
       },
     },

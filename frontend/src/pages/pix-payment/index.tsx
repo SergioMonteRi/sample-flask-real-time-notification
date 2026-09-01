@@ -36,6 +36,7 @@ export function PixPaymentPage() {
     isLoading,
     isChecking,
     isNotFound,
+    isRealtimeConnected,
     loadErrorMessage,
     isConfirming,
     handleSimulateConfirmation,
@@ -138,6 +139,7 @@ export function PixPaymentPage() {
         <PaymentConsole
           isChecking={isChecking}
           isListening={status === 'pending'}
+          isRealtimeConnected={isRealtimeConnected}
           statusLabel={t(`status.${status}`)}
         />
 

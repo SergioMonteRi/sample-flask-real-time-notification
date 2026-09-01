@@ -37,7 +37,12 @@
   },
   "listening": {
     "checking": "Consultando o banco",
-    "interval": "Nova consulta a cada {{seconds}}s"
+    "interval": "Nova consulta a cada {{seconds}}s",
+    "channel": {
+      "connected": "Canal em tempo real conectado",
+      "connecting": "Conectando ao canal em tempo real"
+    },
+    "fallback": "O banco avisa na hora · conferência a cada {{seconds}}s"
   },
   "simulation": {
     "title": "Bancada de testes",
