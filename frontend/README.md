@@ -29,59 +29,63 @@ npm run dev                   # http://localhost:5173
 
 ### Sobre CORS
 
-O backend ainda não habilita CORS. Enquanto isso, o `vite.config.ts` faz proxy de
-`/api/*` para `http://127.0.0.1:5000`, então o browser enxerga API e front na
-mesma origem — nenhuma alteração no projeto Python é necessária para desenvolver.
+O front fala **direto** com o Flask em `http://127.0.0.1:5000` — não há mais
+proxy no `vite.config.ts`. A origem do dev server é liberada em dois lugares
+diferentes do backend, e os dois precisam concordar:
 
-O proxy é uma conveniência de desenvolvimento, não uma dependência. Quando o
-`flask-cors` estiver ligado no `create_app()`, aponte o axios direto para o
-Flask trocando uma linha do `.env`:
+| O quê                                                    | Onde                    | Cobre              |
+| -------------------------------------------------------- | ----------------------- | ------------------ |
+| `CORS(app, origins=["http://localhost:5173"])`           | `backend/app.py`        | rotas REST         |
+| `SocketIO(cors_allowed_origins="http://localhost:5173")` | `backend/extensions.py` | canal `/socket.io` |
 
-```diff
-- VITE_API_BASE_URL=/api
-+ VITE_API_BASE_URL=http://127.0.0.1:5000
-```
+O segundo não é redundante: o `flask-cors` não alcança os endpoints do
+Engine.IO, que fazem a própria checagem de origem e respondem
+`400 Not an accepted origin` quando ela falha.
 
-Só o `config/env.ts` lê essa variável, então nenhum service, hook ou componente
-muda — e o bloco `server.proxy` do `vite.config.ts` pode ser apagado.
+**Trocar a porta do front exige mexer nos dois.** Por isso o `vite.config.ts`
+usa `strictPort: true` — sem ele, a 5173 ocupada faria o Vite subir na 5174 e
+os dois canais quebrariam com erros que não apontam para a porta.
+
+> Um teste com `curl` ou cliente Node não reproduz nenhum dos dois casos: só o
+> browser envia `Origin` automaticamente. Valide no browser.
 
 > **macOS:** o AirPlay Receiver ocupa a porta 5000 em IPv6, o que faz
-> `localhost:5000` responder `403 Forbidden` mesmo com o Flask no ar. Prefira
-> `127.0.0.1` nos dois casos — no proxy e na URL direta.
+> `localhost:5000` responder `403 Forbidden` mesmo com o Flask no ar. Use
+> `127.0.0.1:5000` no `.env`, nunca `localhost:5000`.
 
 ---
 
 ## Scripts
 
-| Script                 | O que faz                                  |
-| ---------------------- | ------------------------------------------ |
-| `npm run dev`          | Servidor de desenvolvimento com proxy      |
-| `npm run build`        | Type-check completo + build de produção    |
-| `npm run preview`      | Serve o build                              |
-| `npm run lint`         | ESLint (inclui Prettier como regra)        |
-| `npm run lint:fix`     | ESLint com autofix                         |
-| `npm run format`       | Prettier em `src/`                         |
-| `npm run type-check`   | Apenas o TypeScript                        |
+| Script               | O que faz                                |
+| -------------------- | ---------------------------------------- |
+| `npm run dev`        | Servidor de desenvolvimento (porta 5173) |
+| `npm run build`      | Type-check completo + build de produção  |
+| `npm run preview`    | Serve o build                            |
+| `npm run lint`       | ESLint (inclui Prettier como regra)      |
+| `npm run lint:fix`   | ESLint com autofix                       |
+| `npm run format`     | Prettier em `src/`                       |
+| `npm run type-check` | Apenas o TypeScript                      |
 
 ---
 
 ## Rotas do front
 
-| Rota                         | Tela                                    |
-| ---------------------------- | --------------------------------------- |
-| `/`                          | Caixa: abre uma nova cobrança           |
-| `/pagamentos/pix/:paymentId` | Comprovante com QR Code e status        |
-| `*`                          | Cobrança não encontrada (404)           |
+| Rota                         | Tela                             |
+| ---------------------------- | -------------------------------- |
+| `/`                          | Caixa: abre uma nova cobrança    |
+| `/pagamentos/pix/:paymentId` | Comprovante com QR Code e status |
+| `*`                          | Cobrança não encontrada (404)    |
 
 ---
 
 ## Endpoints consumidos
 
-| Método | Rota                            | Situação no backend                                   |
-| ------ | ------------------------------- | ----------------------------------------------------- |
-| `POST` | `/payments/pix`                 | ✅ Completo — devolve o pagamento inteiro              |
-| `GET`  | `/payments/pix/<uuid>`          | ⚠️ Stub — devolve só `{ message, payment_id }`         |
-| `POST` | `/payments/pix/confirmation`    | ⚠️ Stub — responde uma mensagem, não persiste nada     |
+| Método | Rota                         | Situação no backend                                |
+| ------ | ---------------------------- | -------------------------------------------------- |
+| `POST` | `/payments/pix`              | ✅ Completo — devolve o pagamento inteiro          |
+| `GET`  | `/payments/pix/<uuid>`       | ⚠️ Stub — devolve só `{ message, payment_id }`     |
+| `POST` | `/payments/pix/confirmation` | ⚠️ Stub — responde uma mensagem, não persiste nada |
 
 ### Detalhes que valem lembrar
 
@@ -144,7 +148,7 @@ O `Flask-SocketIO` já está no `requirements.txt` mas não está ligado no
 Nenhum componente muda: a UI já reage a qualquer atualização do cache.
 
 O botão **"Simular confirmação do banco"** (visível no comprovante) dispara o
-endpoint de confirmação com *optimistic update* — o carimbo de pago aparece na
+endpoint de confirmação com _optimistic update_ — o carimbo de pago aparece na
 hora e volta atrás se o servidor recusar. Como o backend ainda não persiste,
 a confirmação vale apenas para a sessão atual do navegador.
 
@@ -187,7 +191,7 @@ src/
 - **Feedback de erro centralizado** no `MutationCache`: cada mutation declara
   `meta.errorMessageKey` e o toast acontece num lugar só.
 - **Formulário** com React Hook Form + Zod. O schema
-  (`checkout.schema.ts`) guarda *chaves de tradução* como mensagem, então a
+  (`checkout.schema.ts`) guarda _chaves de tradução_ como mensagem, então a
   validação é a única fonte de verdade e continua traduzida nos dois idiomas.
 - **i18n obrigatório**: nenhum texto visível está hardcoded no JSX.
 - **Composition Pattern** em `Card.Root / Header / Section / Divider / Footer`,
@@ -208,9 +212,9 @@ hairlines de 1px no lugar de sombras pesadas e muito espaço em branco. A cor s�
 aparece quando significa alguma coisa: preto para a ação principal, verde para
 confirmado, âmbar para aguardando, vermelho para erro.
 
-Tipografia em três funções: *Fraunces* (serifada de peso leve) reservada para os
-títulos e o valor da cobrança, *Instrument Sans* para toda a interface e
-*DM Mono* para números, ids e o payload do Pix — com `tabular-nums` para as
+Tipografia em três funções: _Fraunces_ (serifada de peso leve) reservada para os
+títulos e o valor da cobrança, _Instrument Sans_ para toda a interface e
+_DM Mono_ para números, ids e o payload do Pix — com `tabular-nums` para as
 colunas não dançarem.
 
 O movimento é discreto e curto: entrada com um leve deslocamento vertical, o

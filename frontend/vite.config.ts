@@ -1,42 +1,22 @@
 import path from 'node:path'
 
 import react from '@vitejs/plugin-react'
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '')
-  const proxyTarget = env.VITE_API_PROXY_TARGET ?? 'http://127.0.0.1:5000'
-
-  return {
-    plugins: [react()],
-    resolve: {
-      alias: { '@': path.resolve(import.meta.dirname, 'src') },
-    },
-    server: {
-      port: 5173,
-      proxy: {
-        /**
-         * O backend Flask nao habilita CORS. O proxy do Vite faz o browser
-         * enxergar a API na mesma origem do front, evitando qualquer
-         * alteracao no projeto Python.
-         */
-        '/api': {
-          target: proxyTarget,
-          changeOrigin: true,
-          rewrite: (requestPath) => requestPath.replace(/^\/api/, ''),
-        },
-
-        /**
-         * Canal do Flask-SocketIO. `ws: true` repassa o upgrade para
-         * WebSocket, e a ausencia de `rewrite` e proposital: o Engine.IO
-         * atende exatamente em /socket.io no backend.
-         */
-        '/socket.io': {
-          target: proxyTarget,
-          changeOrigin: true,
-          ws: true,
-        },
-      },
-    },
-  }
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: { '@': path.resolve(import.meta.dirname, 'src') },
+  },
+  server: {
+    port: 5173,
+    /**
+     * O front fala direto com o Flask, que libera esta origem em dois
+     * lugares: `CORS(app, origins=[...])` para o REST e
+     * `cors_allowed_origins` do SocketIO para o canal. Cair para 5174
+     * porque a 5173 esta ocupada quebraria os dois de uma vez, com um erro
+     * que nao aponta para a porta — melhor falhar aqui.
+     */
+    strictPort: true,
+  },
 })

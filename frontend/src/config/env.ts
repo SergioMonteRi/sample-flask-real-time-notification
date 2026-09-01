@@ -5,10 +5,7 @@ const DEFAULT_SOCKET_PATH = '/socket.io'
 
 export const ENV = {
   apiBaseUrl: import.meta.env.VITE_API_BASE_URL,
-  /**
-   * Vazio significa "mesma origem do front": em dev o proxy do Vite leva
-   * `/socket.io` ate o Flask, entao o backend nao precisa liberar CORS.
-   */
+  /** Vazio cai para a mesma origem do front, util atras de um proxy. */
   socketUrl: import.meta.env.VITE_SOCKET_URL || undefined,
   socketPath: import.meta.env.VITE_SOCKET_PATH || DEFAULT_SOCKET_PATH,
   appEnv: import.meta.env.VITE_APP_ENV as AppEnv,
