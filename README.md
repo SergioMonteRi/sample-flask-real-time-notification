@@ -316,7 +316,7 @@ socket handshake at once, with an error that points nowhere near the port.
 
 ```env
 SECRET_KEY="my_secret_key"
-SQLALCHEMY_DATABASE_URI="mysql+pymysql://root:admin123@127.0.0.1:3306/sample-flask-real-time-notificaiton"
+SQLALCHEMY_DATABASE_URI="mysql+pymysql://root:admin123@127.0.0.1:3306/sample-flask-real-time-notification"
 ```
 
 The credentials and database name match `docker-compose.yml`, so these values work out of the
@@ -575,7 +575,6 @@ npm run type-check    # tsc, no emit
       the UI checks the deadline
 - [ ] Read the allowed origins from the environment instead of hardcoding `localhost:5173` in
       two files
-- [ ] Fix the `notificaiton` typo in the database name (`docker-compose.yml` and the URI)
 
 ## License
 
