@@ -57,7 +57,8 @@
   "errors": {
     "loadFailed": "Não foi possível carregar esta cobrança.",
     "copyFailed": "Não conseguimos copiar o código. Copie manualmente.",
-    "webhookFailed": "O webhook não aceitou a notificação. Tente novamente."
+    "webhookFailed": "O webhook não aceitou a notificação. Tente novamente.",
+    "webhookExpired": "Esta cobrança expirou. O banco não pode mais confirmá-la — emita uma nova."
   },
   "success": {
     "webhookSent": "Webhook notificado. Aguardando o aviso do canal."

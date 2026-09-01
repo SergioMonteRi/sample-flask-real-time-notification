@@ -1,7 +1,6 @@
 from uuid import UUID
 from flask import jsonify, Blueprint, request
 from pydantic import ValidationError
-from sqlalchemy import select
 
 from schemas.get_payment_response import PaymentResponse
 from schemas.create_payment import CreatePaymentRequest, CreatePaymentResponse

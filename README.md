@@ -90,7 +90,7 @@ exercise.
 | CORS | Flask-Cors |
 | Configuration | python-dotenv |
 
-### Front end
+### Front-end
 
 | Layer | Tool |
 | --- | --- |
@@ -118,7 +118,8 @@ sample-flask-real-time-notification/
 │   ├── extensions.py             # SocketIO instance, created outside the app
 │   ├── requirements.txt
 │   ├── custom_types/
-│   │   └── uuid.py               # TypeDecorator: UUID <-> String(36)
+│   │   ├── uuid.py               # TypeDecorator: UUID <-> String(36)
+│   │   └── utc_datetime.py       # TypeDecorator: aware UTC <-> naive DATETIME
 │   ├── repository/
 │   │   └── database.py           # DeclarativeBase + the SQLAlchemy instance
 │   ├── models/
@@ -246,7 +247,7 @@ the server.
 | `is_paid` | `Boolean` | defaults to `false` |
 | `bank_payment_id` | `String(36)` | UUID returned by the provider; nullable |
 | `pix_payload` | `Text` | the BR Code string; nullable |
-| `expiration_date` | `DateTime` | required; declared `timezone=True`, but `DATETIME` stores no offset |
+| `expiration_date` | `DATETIME` | required; stored as naive UTC, read back as aware UTC via `UTCDateTime` |
 
 A single table by design: there is no user, no order, and no ledger here — the exercise is
 the notification path, not the accounting around it.
@@ -276,7 +277,6 @@ python3 -m venv venv
 source venv/bin/activate
 
 pip install -r requirements.txt
-pip install pydantic          # imported by the schemas, not yet pinned — see Roadmap
 
 cp .env.example .env          # then fill it in, see Configuration below
 ```
@@ -368,7 +368,7 @@ open, the confirmation lands on screen through the socket before the `curl` retu
 | --- | --- | --- |
 | `POST` | `/payments/pix` | Create a Pix charge |
 | `GET` | `/payments/pix/<id>` | Retrieve a charge |
-| `POST` | `/webhooks/pix` | Bank notification: confirm a charge |
+| `POST` | `/webhooks/pix` | Bank notification: confirm a charge (`409` if expired) |
 
 `<id>` is validated at routing time by Flask's `<uuid:payment_id>` converter: a malformed
 identifier returns `404` before reaching the view.
@@ -426,7 +426,7 @@ Creates a charge, asks the provider for a Pix payload, and stores it as unpaid w
     "is_paid": false,
     "bank_payment_id": "0198f2b1-9a3d-7bb2-8c41-1e2f3a4b5c6d",
     "pix_payload": "00020126...6304ABCD",
-    "expiration_date": "2026-09-01T15:12:44.187000"
+    "expiration_date": "2026-09-01T15:12:44Z"
   }
 }
 ```
@@ -454,13 +454,14 @@ socket event to confirm the status against the server.
   "is_paid": true,
   "bank_payment_id": "0198f2b1-9a3d-7bb2-8c41-1e2f3a4b5c6d",
   "pix_payload": "00020126...6304ABCD",
-  "expiration_date": "2026-09-01T15:12:44.187000"
+  "expiration_date": "2026-09-01T15:12:44Z"
 }
 ```
 
-> **`expiration_date` carries no offset.** The service stores it as UTC, but the column is a
-> `DATETIME`, which drops the timezone, so the serialized value has no `Z` — a client that
-> parses it naively reads it as local time. Normalizing this is on the [Roadmap](#roadmap).
+> **`expiration_date` always carries its offset.** MySQL's `DATETIME` stores no timezone, so
+> the `UTCDateTime` column type normalizes the value on both sides: aware UTC in, naive UTC
+> stored, aware UTC back out. The serialized value therefore ends in `Z`, and a client can
+> parse it without guessing — `new Date(...)` in a browser reads it as the right instant.
 
 **Errors** — `404` no charge with that id.
 
@@ -491,8 +492,14 @@ over the socket.
 Calling it twice is safe: an already-paid charge returns `200` without committing again and
 without emitting a second event.
 
-**Errors** — `400` invalid payload; `404` no charge with that `bank_payment_id`.
+**Errors** — `400` invalid payload; `404` no charge with that `bank_payment_id`; `409` the
+charge is past its `expiration_date`.
 
+> **Expiry is enforced here, not in the UI.** A charge whose deadline has passed is refused
+> with `409 Payment has expired` and is never marked paid, even if the bank notifies late.
+> The comparison is only sound because `UTCDateTime` hands the service an aware UTC value —
+> against a naive column it would raise instead of deciding.
+>
 > **Unauthenticated, by omission.** Any caller who knows a `bank_payment_id` can settle a
 > charge. A real integration would verify a provider signature; see the
 > [Roadmap](#roadmap).
@@ -563,19 +570,15 @@ npm run type-check    # tsc, no emit
 - [x] Charge creation and retrieval endpoints
 - [x] Bank webhook confirming the charge
 - [x] Confirmation pushed over Socket.IO, scoped to one room per charge
+- [x] Server-side expiry enforcement: an expired charge is refused with `409`
+- [x] Timezone-safe `expiration_date`, normalized by a dedicated column type
 - [x] React front end with QR Code, countdown, and a webhook test bench
-- [ ] Pin `pydantic` in `requirements.txt` — it is imported but never declared — and drop the
-      unused `qrcode` entry, since the QR Code is rendered client-side
 - [ ] Automated tests: route integration tests on the backend, hook tests on the front end
 - [ ] Replace `db.create_all()` with Alembic migrations
-- [ ] Normalize `expiration_date` on write, or return it with an offset — the column drops the
-      timezone and the browser reads the value as local time
 - [ ] Authenticate the webhook with a shared secret or signature
-- [ ] Enforce expiry server-side: an expired charge can still be confirmed today, because only
-      the UI checks the deadline
 - [ ] Read the allowed origins from the environment instead of hardcoding `localhost:5173` in
       two files
 
 ## License
 
-Released under the MIT License.
+Released under the [MIT License](LICENSE).

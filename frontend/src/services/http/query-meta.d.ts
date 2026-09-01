@@ -1,5 +1,7 @@
 import '@tanstack/react-query'
 
+import type { ApiErrorKind } from './http-error'
+
 /**
  * Tipagem do `meta` de queries e mutations. Em vez de cada call site cablear
  * um toast, ele declara a chave de traducao e o QueryClient decide o que
@@ -12,6 +14,7 @@ declare module '@tanstack/react-query' {
     }
     mutationMeta: {
       errorMessageKey?: string
+      errorMessageKeys?: Partial<Record<ApiErrorKind, string>>
       successMessageKey?: string
     }
   }

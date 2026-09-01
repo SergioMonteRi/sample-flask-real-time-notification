@@ -2,7 +2,7 @@ import axios from 'axios'
 import { ZodError } from 'zod'
 
 export type ApiErrorKind =
-  'network' | 'not-found' | 'validation' | 'contract' | 'unexpected'
+  'network' | 'not-found' | 'validation' | 'contract' | 'expired' | 'unexpected'
 
 export interface NormalizedApiError {
   kind: ApiErrorKind
@@ -35,6 +35,10 @@ export const normalizeApiError = (error: unknown): NormalizedApiError => {
       return { kind: 'validation', status, message: error.message }
     }
 
+    if (status === 409) {
+      return { kind: 'expired', status, message: error.message }
+    }
+
     return { kind: 'unexpected', status, message: error.message }
   }
 
@@ -47,3 +51,6 @@ export const normalizeApiError = (error: unknown): NormalizedApiError => {
 
 export const isNotFoundError = (error: unknown): boolean =>
   normalizeApiError(error).kind === 'not-found'
+
+export const isExpiredError = (error: unknown): boolean =>
+  normalizeApiError(error).kind === 'expired'

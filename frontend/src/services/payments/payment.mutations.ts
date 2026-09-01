@@ -45,6 +45,7 @@ export const paymentMutations = {
       },
       meta: {
         errorMessageKey: 'payment:errors.webhookFailed',
+        errorMessageKeys: { expired: 'payment:errors.webhookExpired' },
         successMessageKey: 'payment:success.webhookSent',
       },
     })

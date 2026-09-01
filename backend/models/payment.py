@@ -2,11 +2,12 @@ from uuid import UUID, uuid7
 from datetime import datetime
 from decimal import Decimal
 
-from sqlalchemy import DateTime, Numeric, Text
+from sqlalchemy import Numeric, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from repository.database import Base
 from custom_types.uuid import UUIDType
+from custom_types.utc_datetime import UTCDateTime
 
 class Payment(Base):
     __tablename__ = "payment"
@@ -38,7 +39,7 @@ class Payment(Base):
     )
 
     expiration_date: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
+        UTCDateTime(),
         nullable=False
     )
 

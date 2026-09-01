@@ -57,7 +57,8 @@
   "errors": {
     "loadFailed": "We could not load this charge.",
     "copyFailed": "We could not copy the code. Please copy it manually.",
-    "webhookFailed": "The webhook did not accept the notification. Try again."
+    "webhookFailed": "The webhook did not accept the notification. Try again.",
+    "webhookExpired": "This charge has expired. The bank can no longer confirm it — issue a new one."
   },
   "success": {
     "webhookSent": "Webhook notified. Waiting for the channel."
