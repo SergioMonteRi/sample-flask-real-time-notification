@@ -3,10 +3,13 @@ from datetime import datetime, timedelta
 from uuid import UUID
 from flask import jsonify, Blueprint, request
 from pydantic import ValidationError
+from sqlalchemy import select
 
 from repository.database import db
-from integrations.payments.fake_bank.pix.provider import FakePixProvider
+from models.payment import Payment
 from services.payment_service import PaymentService
+from integrations.payments.fake_bank.pix.provider import FakePixProvider
+from schemas.get_payment_response import PaymentResponse
 from schemas.create_payment import CreatePaymentRequest, CreatePaymentResponse
 
 pix_bp = Blueprint("pix", __name__)
@@ -51,8 +54,20 @@ def pix_confirmation():
     }), 200
 
 @pix_bp.route("/payments/pix/<uuid:payment_id>", methods=["GET"])
-def payment_pix_page(payment_id: UUID):
-    return jsonify({
-        "message": "pix payment",
-        "payment_id": str(payment_id)
-    }), 200
+def get_pix_payment_by_id(payment_id: UUID):
+    stmt = select(Payment).where(
+        Payment.id == payment_id
+    )
+
+    current_payment = db.session.scalar(statement=stmt)
+
+    if current_payment is None:
+        return jsonify({
+            "error": "Payment not found"
+        }), 404
+
+    payment_response = PaymentResponse.model_validate(current_payment)
+
+    return jsonify(
+        payment_response.model_dump(mode="json")
+    )

@@ -26,6 +26,8 @@ export const paymentService = {
   getPixPayment: async (paymentId: string): Promise<GetPixPaymentResponse> => {
     const { data } = await apiClient.get(`${PIX_ENDPOINT}/${paymentId}`)
 
+    console.log('teste', data, 'teste')
+    console.log(getPixPaymentResponseSchema.parse(data))
     return getPixPaymentResponseSchema.parse(data)
   },
 
