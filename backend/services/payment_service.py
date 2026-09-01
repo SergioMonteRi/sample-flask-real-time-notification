@@ -9,6 +9,11 @@ from models.payment import Payment
 from repository.database import db
 from integrations.payments.pix_provider import PixProvider
 
+from exceptions.payment import (
+    PaymentNotFoundError,
+    PaymentExpiredError
+)
+
 class PaymentService:
     def __init__(self, pix_provider: PixProvider, socketio: SocketIO):
         self.pix_provider = pix_provider
@@ -48,10 +53,13 @@ class PaymentService:
         payment = db.session.scalar(stmt)
 
         if payment is None:
-            return None
+            raise PaymentNotFoundError()
 
         if payment.is_paid:
             return payment
+
+        if payment.expiration_date <= datetime.now(timezone.utc):
+            raise PaymentExpiredError()
 
         payment.is_paid = True
 

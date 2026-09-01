@@ -4,6 +4,11 @@ from pydantic import ValidationError
 from schemas.pix_webhook import PixWebhookRequest
 from services.factories import create_payment_service
 
+from exceptions.payment import (
+    PaymentNotFoundError,
+    PaymentExpiredError
+)
+
 webhook_bp = Blueprint("webhook", __name__)
 
 @webhook_bp.route("/webhooks/pix", methods=["POST"])
@@ -20,14 +25,19 @@ def pix_webhook():
 
     payment_service = create_payment_service()
 
-    payment = payment_service.confirm_payment(
-        bank_payment_id=webhook_data.bank_payment_id
-    )
-
-    if payment is None:
+    try:
+        payment_service.confirm_payment(
+            bank_payment_id=webhook_data.bank_payment_id
+        )
+    except PaymentNotFoundError:
         return jsonify({
             "error": "Payment not found"
         }), 404
+
+    except PaymentExpiredError:
+        return jsonify({
+            "error": "Payment has expired"
+        }), 409
 
     return jsonify({
         "status": "ok"
