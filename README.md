@@ -34,6 +34,7 @@ over a Socket.IO channel — without polling for it.
 - [API reference](#api-reference)
 - [Real-time channel](#real-time-channel)
 - [Front end](#front-end)
+- [Tests](#tests)
 - [Roadmap](#roadmap)
 - [License](#license)
 
@@ -71,6 +72,8 @@ exercise.
   off to 30s once it is connected. The channel is the notification; the query is insurance.
 - **Test bench in the UI** — a panel on the payment screen plays the bank, firing the
   webhook so the real notification path can be watched end to end.
+- **Unit-tested business rules** — `PaymentService` is covered without a database or a
+  network, including the guards that make a repeated webhook a no-op.
 - **Time-sortable UUID keys** — UUIDv7 primary keys via a custom SQLAlchemy type.
 - **Containerized database** — MySQL through Docker Compose, no local install required.
 
@@ -88,6 +91,7 @@ exercise.
 | Driver | PyMySQL |
 | Validation | Pydantic 2 |
 | CORS | Flask-Cors |
+| Tests | pytest 9 |
 | Configuration | python-dotenv |
 
 ### Front-end
@@ -117,6 +121,7 @@ sample-flask-real-time-notification/
 │   ├── app.py                    # entry point: application factory, CORS, blueprints
 │   ├── extensions.py             # SocketIO instance, created outside the app
 │   ├── requirements.txt
+│   ├── pytest.ini                # pythonpath + the unit/integration markers
 │   ├── custom_types/
 │   │   ├── uuid.py               # TypeDecorator: UUID <-> String(36)
 │   │   └── utc_datetime.py       # TypeDecorator: aware UTC <-> naive DATETIME
@@ -137,6 +142,8 @@ sample-flask-real-time-notification/
 │   ├── services/
 │   │   ├── payment_service.py    # every business rule of the flow
 │   │   └── factories.py          # wires the service to its dependencies
+│   ├── tests/
+│   │   └── unit/services/        # PaymentService, with mocked provider and socket
 │   └── integrations/payments/
 │       ├── pix_provider.py       # the abstract interface
 │       └── fake_bank/pix/
@@ -562,6 +569,38 @@ npm run format        # prettier
 npm run type-check    # tsc, no emit
 ```
 
+## Tests
+
+The backend has unit coverage for `PaymentService`, the layer that holds every business rule
+of the flow. `pytest.ini` sets `pythonpath = .` and registers two markers, `unit` and
+`integration`, so the suites can be run apart as they grow.
+
+```bash
+cd backend
+source venv/bin/activate
+
+pytest                 # everything
+pytest -m unit         # unit only
+pytest -q              # quiet
+```
+
+The suite needs no database, no running server, and no network. `PaymentService` takes its
+`PixProvider` and its `SocketIO` through the constructor, so both arrive as mocks; the
+SQLAlchemy session, imported at module level, is patched per test.
+
+The six cases cover charge creation — the provider is called once, the row is added and
+committed, the expiry lands 30 minutes ahead — and all four branches of `confirm_payment`:
+
+| Case | Asserts |
+| --- | --- |
+| unknown charge | raises `PaymentNotFoundError` |
+| already paid | returns the payment, **no** commit and **no** emit |
+| past the deadline | raises `PaymentExpiredError`, stays unpaid, **no** commit |
+| confirmed | flips `is_paid`, commits, emits to `payment:<id>` |
+
+The `assert_not_called()` checks are the point of the idempotent rows: a repeated webhook
+must not commit again and must not re-notify the browser.
+
 ## Roadmap
 
 - [x] `Payment` modeling with a custom UUIDv7 column type
@@ -573,7 +612,9 @@ npm run type-check    # tsc, no emit
 - [x] Server-side expiry enforcement: an expired charge is refused with `409`
 - [x] Timezone-safe `expiration_date`, normalized by a dedicated column type
 - [x] React front end with QR Code, countdown, and a webhook test bench
-- [ ] Automated tests: route integration tests on the backend, hook tests on the front end
+- [x] Unit tests for `PaymentService`, with the provider and the socket mocked
+- [ ] Route integration tests with Flask's `test_client`, under the `integration` marker
+- [ ] Front-end tests, starting with the socket hook
 - [ ] Replace `db.create_all()` with Alembic migrations
 - [ ] Authenticate the webhook with a shared secret or signature
 - [ ] Read the allowed origins from the environment instead of hardcoding `localhost:5173` in
